@@ -1,0 +1,56 @@
+<div class="d-flex" style="min-height: 100vh;">
+  <!-- Sidebar -->
+  <div class="bg-dark text-white p-3" style="width: 240px;">
+    <h4 class="mb-4">Finance Tracker</h4>
+
+    <ul class="nav flex-column gap-2">
+      <li class="nav-item">
+        <a class="nav-link text-white" routerLink="/dashboard">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" routerLink="/transactions">Transactions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" routerLink="/categories">Categories</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-white" routerLink="/budget">Budget</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main -->
+  <div class="flex-grow-1">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-light bg-light px-3">
+      <span class="navbar-brand mb-0 h5">Dashboard</span>
+      <button class="btn btn-outline-danger">Logout</button>
+    </nav>
+
+    <!-- Content -->
+    <div class="container mt-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>Total Income</h6>
+            <h3>0</h3>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>Total Expense</h6>
+            <h3>0</h3>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card p-3">
+            <h6>Balance</h6>
+            <h3>0</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="container mt-4">
+  <h2 class="mb-3">Transactions</h2>
+
+  <!-- Add Transaction Form -->
+  <div class="card p-3 mb-4">
+    <h5>Add Transaction</h5>
+
+    <div class="row g-2">
+      <div class="col-md-3">
+        <input class="form-control" placeholder="Title" />
+      </div>
+
+      <div class="col-md-2">
+        <input class="form-control" type="number" placeholder="Amount" />
+      </div>
+
+      <div class="col-md-2">
+        <select class="form-select">
+          <option>Income</option>
+          <option>Expense</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select class="form-select">
+          <option>Food</option>
+          <option>Travel</option>
+          <option>Salary</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Table -->
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Amount</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>Sample</td>
+        <td>1000</td>
+        <td>Income</td>
+        <td>Salary</td>
+        <td>2026-02-03</td>
+        <td>
+          <button class="btn btn-sm btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

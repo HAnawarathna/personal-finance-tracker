@@ -1,0 +1,29 @@
+<div class="container mt-5" style="max-width: 500px;">
+  <h2 class="mb-3">Login</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="mb-2">
+    <input
+      class="form-control"
+      placeholder="Email"
+      [(ngModel)]="email"
+      name="email"
+      type="email"
+    />
+  </div>
+
+  <div class="mb-3">
+    <input
+      class="form-control"
+      placeholder="Password"
+      [(ngModel)]="password"
+      name="password"
+      type="password"
+    />
+  </div>
+
+  <button class="btn btn-primary" (click)="onLogin()">Login</button>
+
+  <a class="ms-3" routerLink="/register">Register</a>
+</div>
