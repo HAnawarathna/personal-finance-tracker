@@ -1,1 +1,257 @@
-<p>budget works!</p>
+<div class="budget-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Budget Management</h1>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <span class="icon">+</span> Set Budget
+    </button>
+  </div>
+
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="alert alert-error">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Budget Alerts -->
+  @if (alerts().length > 0) {
+    <div class="alerts-section">
+      <h2 class="section-title">
+        <span class="icon">\u26a0\ufe0f</span> Budget Alerts
+      </h2>
+      <div class="alerts-grid">
+        @for (alert of alerts(); track alert.categoryId) {
+          <div class="alert-card" [class]="'alert-' + alert.severity">
+            <div class="alert-header">
+              <span class="alert-icon">
+                {{ alert.severity === 'danger' ? '\ud83d\udea8' : '\u26a0\ufe0f' }}
+              </span>
+              <h3>{{ alert.categoryName }}</h3>
+            </div>
+            <div class="alert-body">
+              <div class="alert-progress">
+                <div class="progress-bar">
+                  <div 
+                    class="progress-fill"
+                    [class]="'progress-' + alert.severity"
+                    [style.width.%]="alert.percentage"
+                  ></div>
+                </div>
+                <span class="progress-text">{{ alert.percentage | number:'1.0-0' }}%</span>
+              </div>
+              <p class="alert-message">
+                @if (alert.severity === 'danger') {
+                  <strong>Budget exceeded!</strong> Spent ${{ alert.spent | number:'1.2-2' }} of ${{ alert.budgetAmount | number:'1.2-2' }}
+                } @else {
+                  <strong>Warning:</strong> You've used {{ alert.percentage | number:'1.0-0' }}% of your budget
+                }
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Budget Overview -->
+  <div class="overview-section">
+    <div class="overview-card">
+      <div class="overview-icon total">\ud83d\udcb0</div>
+      <div class="overview-content">
+        <h3>Total Budget</h3>
+        <p class="amount">${{ totalBudget() | number:'1.2-2' }}</p>
+      </div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon spent">\ud83d\udcb8</div>
+      <div class="overview-content">
+        <h3>Total Spent</h3>
+        <p class="amount">${{ totalSpent() | number:'1.2-2' }}</p>
+      </div>
+    </div>
+    <div class="overview-card">
+      <div class="overview-icon remaining">\ud83d\udcb5</div>
+      <div class="overview-content">
+        <h3>Remaining</h3>
+        <p class="amount" [class.negative]="totalRemaining() < 0">
+          ${{ totalRemaining() | number:'1.2-2' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (loading() && budgets().length === 0) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading budgets...</p>
+    </div>
+  }
+
+  <!-- Budgets List -->
+  @if (!loading() || budgets().length > 0) {
+    <div class="budgets-section">
+      <h2 class="section-title">
+        <span class="icon">\ud83d\udccb</span> Budget Details
+        <span class="badge">{{ budgets().length }}</span>
+      </h2>
+      
+      @if (budgets().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">\ud83d\udccb</div>
+          <h3>No budgets set</h3>
+          <p>Start managing your finances by setting budgets for your categories</p>
+          <button class="btn btn-primary" (click)="openCreateModal()">Set Your First Budget</button>
+        </div>
+      } @else {
+        <div class="budget-list">
+          @for (budget of budgets(); track budget.id) {
+            <div class="budget-card">
+              <div class="budget-header">
+                <div class="budget-info">
+                  <h3>{{ getCategoryName(budget.categoryId) }}</h3>
+                  <span class="budget-period">{{ budget.period }}</span>
+                </div>
+                <div class="budget-actions">
+                  <button class="btn-icon" (click)="openEditModal(budget)" title="Edit">
+                    \u270f\ufe0f
+                  </button>
+                  <button class="btn-icon btn-danger" (click)="deleteBudget(budget)" title="Delete">
+                    \ud83d\uddd1\ufe0f
+                  </button>
+                </div>
+              </div>
+              
+              <div class="budget-body">
+                <div class="budget-amounts">
+                  <div class="amount-item">
+                    <span class="label">Budget:</span>
+                    <span class="value">${{ budget.amount | number:'1.2-2' }}</span>
+                  </div>
+                  <div class="amount-item">
+                    <span class="label">Spent:</span>
+                    <span class="value spent">${{ (budget.spent || 0) | number:'1.2-2' }}</span>
+                  </div>
+                  <div class="amount-item">
+                    <span class="label">Remaining:</span>
+                    <span class="value" [class.negative]="(budget.remaining || 0) < 0">
+                      ${{ ((budget.amount - (budget.spent || 0))) | number:'1.2-2' }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="budget-progress">
+                  <div class="progress-bar">
+                    <div 
+                      class="progress-fill"
+                      [class]="'progress-' + getProgressClass(getPercentage(budget))"
+                      [style.width.%]="getPercentage(budget)"
+                    ></div>
+                  </div>
+                  <span class="progress-percentage">{{ getPercentage(budget) | number:'1.0-0' }}%</span>
+                </div>
+                
+                <div class="budget-dates">
+                  <span>\ud83d\udcc5 Started: {{ budget.startDate }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing() ? 'Edit Budget' : 'Set New Budget' }}</h2>
+          <button class="btn-close" (click)="closeModal()">&times;</button>
+        </div>
+        
+        <form [formGroup]="budgetForm" (ngSubmit)="saveBudget()">
+          <div class="modal-body">
+            <!-- Category Selection -->
+            <div class="form-group">
+              <label for="categoryId">Category *</label>
+              <select 
+                id="categoryId" 
+                formControlName="categoryId" 
+                class="form-control"
+                [class.invalid]="budgetForm.get('categoryId')?.invalid && budgetForm.get('categoryId')?.touched"
+              >
+                <option value="">Select a category</option>
+                @for (category of categories(); track category.id) {
+                  <option [value]="category.id">
+                    {{ category.icon }} {{ category.name }} ({{ category.type }})
+                  </option>
+                }
+              </select>
+              @if (budgetForm.get('categoryId')?.invalid && budgetForm.get('categoryId')?.touched) {
+                <span class="error-text">Please select a category</span>
+              }
+            </div>
+
+            <!-- Amount Input -->
+            <div class="form-group">
+              <label for="amount">Budget Amount ($) *</label>
+              <input 
+                id="amount"
+                type="number" 
+                formControlName="amount"
+                placeholder="0.00"
+                step="0.01"
+                min="0"
+                class="form-control"
+                [class.invalid]="budgetForm.get('amount')?.invalid && budgetForm.get('amount')?.touched"
+              />
+              @if (budgetForm.get('amount')?.invalid && budgetForm.get('amount')?.touched) {
+                <span class="error-text">Please enter a valid amount (minimum $1)</span>
+              }
+            </div>
+
+            <!-- Period Selection -->
+            <div class="form-group">
+              <label for="period">Period *</label>
+              <select id="period" formControlName="period" class="form-control">
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+
+            <!-- Start Date -->
+            <div class="form-group">
+              <label for="startDate">Start Date *</label>
+              <input 
+                id="startDate"
+                type="date" 
+                formControlName="startDate"
+                class="form-control"
+                [class.invalid]="budgetForm.get('startDate')?.invalid && budgetForm.get('startDate')?.touched"
+              />
+              @if (budgetForm.get('startDate')?.invalid && budgetForm.get('startDate')?.touched) {
+                <span class="error-text">Please select a start date</span>
+              }
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="budgetForm.invalid || loading()"
+            >
+              {{ loading() ? 'Saving...' : (isEditing() ? 'Update' : 'Set Budget') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
