@@ -90,10 +90,10 @@
                 @for (txn of recentTransactions(); track txn.id) {
                   <div class="transaction-item">
                     <div class="transaction-info">
-                      <span class="transaction-icon">{{ getCategoryIcon(txn.categoryId) }}</span>
+                      <span class="transaction-icon">💰</span>
                       <div>
                         <p class="transaction-category">
-                          {{ (categories() | slice:0:10).find(c => c.id === txn.categoryId)?.name || 'Transfer' }}
+                          {{ getCategoryName(txn.categoryId) }}
                         </p>
                         <p class="transaction-date">{{ txn.date }}</p>
                       </div>

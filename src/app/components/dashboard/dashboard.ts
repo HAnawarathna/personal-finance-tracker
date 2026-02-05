@@ -1,10 +1,21 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TransactionService } from '../../services/transaction';
+import { Transaction } from '../../services/transaction';
 import { BudgetService } from '../../services/budget';
 import { CategoryService } from '../../services/category';
-import { AuthService } from '../../services/auth';
+import { Auth } from '../../services/auth';
+
+export interface TransactionModel {
+  id?: string;
+  type: 'income' | 'expense';
+  categoryId: string;
+  amount: number;
+  description?: string;
+  date: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -15,12 +26,13 @@ import { AuthService } from '../../services/auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard implements OnInit {
-  private transactionService = inject(TransactionService);
+  private transactionService = inject(Transaction);
   private budgetService = inject(BudgetService);
   private categoryService = inject(CategoryService);
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
+  private router = inject(Router);
 
-  transactions = this.transactionService.transactions;
+  transactions = signal<TransactionModel[]>([]);
   budgets = this.budgetService.budgets;
   categories = this.categoryService.categories;
   loading = signal(false);
@@ -31,14 +43,14 @@ export class Dashboard implements OnInit {
 
   totalIncome = computed(() => 
     this.transactions()
-      .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0)
+      .filter((t: TransactionModel) => t.type === 'income')
+      .reduce((sum: number, t: TransactionModel) => sum + t.amount, 0)
   );
 
   totalExpense = computed(() => 
     this.transactions()
-      .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0)
+      .filter((t: TransactionModel) => t.type === 'expense')
+      .reduce((sum: number, t: TransactionModel) => sum + t.amount, 0)
   );
 
   balance = computed(() => this.totalIncome() - this.totalExpense());
@@ -53,8 +65,8 @@ export class Dashboard implements OnInit {
   categoryBreakdown = computed(() => {
     const breakdown: { [key: string]: number } = {};
     this.transactions()
-      .filter(t => t.type === 'expense')
-      .forEach(t => {
+      .filter((t: TransactionModel) => t.type === 'expense')
+      .forEach((t: TransactionModel) => {
         const category = this.categories().find(c => c.id === t.categoryId);
         const name = category?.name || 'Other';
         breakdown[name] = (breakdown[name] || 0) + t.amount;
@@ -71,27 +83,53 @@ export class Dashboard implements OnInit {
 
   loadData(): void {
     this.loading.set(true);
-    this.transactionService.getTransactions().subscribe(() => {
-      this.budgetService.getBudgets().subscribe(() => {
-        this.categoryService.getCategories().subscribe(() => {
-          this.loading.set(false);
-        });
+    // Load mock data for demo
+    this.transactions.set([
+      {
+        id: '1',
+        type: 'income',
+        categoryId: 'salary',
+        amount: 5000,
+        description: 'Monthly Salary',
+        date: new Date().toISOString().split('T')[0],
+      },
+      {
+        id: '2',
+        type: 'expense',
+        categoryId: 'food',
+        amount: 150,
+        description: 'Groceries',
+        date: new Date().toISOString().split('T')[0],
+      },
+      {
+        id: '3',
+        type: 'expense',
+        categoryId: 'transport',
+        amount: 50,
+        description: 'Gas',
+        date: new Date().toISOString().split('T')[0],
+      },
+    ]);
+    this.budgetService.getBudgets().subscribe(() => {
+      this.categoryService.getCategories().subscribe(() => {
+        this.loading.set(false);
       });
     });
   }
 
   logout(): void {
-    this.authService.logout();
-  }
-
-  getCategoryIcon(categoryId: string): string {
-    const category = this.categories().find(c => c.id === categoryId);
-    return category?.icon || '💰';
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
   getProgressColor(percentage: number): string {
     if (percentage >= 100) return 'danger';
     if (percentage >= 80) return 'warning';
     return 'success';
+  }
+
+  getCategoryName(categoryId: string): string {
+    const category = this.categories().find(c => c.id === categoryId);
+    return category?.name || 'Transfer';
   }
 }

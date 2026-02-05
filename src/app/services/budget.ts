@@ -117,6 +117,9 @@ export class BudgetService {
     
     budgets.forEach(budget => {
       const spent = budget.spent || 0;
+      // Prevent division by zero
+      if (budget.amount <= 0) return;
+      
       const percentage = (spent / budget.amount) * 100;
       
       if (percentage >= 80) {
