@@ -1,56 +1,170 @@
-<div class="d-flex" style="min-height: 100vh;">
+<div class="dashboard-container">
   <!-- Sidebar -->
-  <div class="bg-dark text-white p-3" style="width: 240px;">
-    <h4 class="mb-4">Finance Tracker</h4>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2 class="logo">💰 Finance</h2>
+    </div>
 
-    <ul class="nav flex-column gap-2">
-      <li class="nav-item">
-        <a class="nav-link text-white" routerLink="/dashboard">Dashboard</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" routerLink="/transactions">Transactions</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" routerLink="/categories">Categories</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" routerLink="/budget">Budget</a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Main -->
-  <div class="flex-grow-1">
-    <!-- Top Navbar -->
-    <nav class="navbar navbar-light bg-light px-3">
-      <span class="navbar-brand mb-0 h5">Dashboard</span>
-      <button class="btn btn-outline-danger">Logout</button>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item active">
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/transactions" class="nav-item">
+        <span class="icon">💳</span>
+        <span>Transactions</span>
+      </a>
+      <a routerLink="/categories" class="nav-item">
+        <span class="icon">🏷️</span>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/budget" class="nav-item">
+        <span class="icon">📋</span>
+        <span>Budget</span>
+      </a>
     </nav>
+  </aside>
 
-    <!-- Content -->
-    <div class="container mt-4">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h6>Total Income</h6>
-            <h3>0</h3>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h6>Total Expense</h6>
-            <h3>0</h3>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card p-3">
-            <h6>Balance</h6>
-            <h3>0</h3>
-          </div>
-        </div>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navbar -->
+    <header class="navbar">
+      <div class="navbar-content">
+        <h1 class="page-title">Dashboard</h1>
+        <button (click)="logout()" class="btn-logout">
+          <span>🚪</span> Logout
+        </button>
       </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="content">
+      @if (loading()) {
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      } @else {
+        <!-- Financial Overview -->
+        <div class="overview-grid">
+          <div class="overview-card">
+            <div class="card-icon income">💵</div>
+            <div class="card-content">
+              <h3>Total Income</h3>
+              <p class="amount">${{ totalIncome() | number:'1.2-2' }}</p>
+            </div>
+          </div>
+
+          <div class="overview-card">
+            <div class="card-icon expense">💸</div>
+            <div class="card-content">
+              <h3>Total Expense</h3>
+              <p class="amount">${{ totalExpense() | number:'1.2-2' }}</p>
+            </div>
+          </div>
+
+          <div class="overview-card">
+            <div class="card-icon balance" [class.negative]="balance() < 0">💰</div>
+            <div class="card-content">
+              <h3>Balance</h3>
+              <p class="amount" [class.negative]="balance() < 0">${{ balance() | number:'1.2-2' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions & Budget Status -->
+        <div class="content-grid">
+          <!-- Recent Transactions -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Recent Transactions</h2>
+              <a routerLink="/transactions" class="view-all">View All →</a>
+            </div>
+            
+            @if (recentTransactions().length === 0) {
+              <div class="empty-state">
+                <p>No transactions yet</p>
+              </div>
+            } @else {
+              <div class="transactions-list">
+                @for (txn of recentTransactions(); track txn.id) {
+                  <div class="transaction-item">
+                    <div class="transaction-info">
+                      <span class="transaction-icon">{{ getCategoryIcon(txn.categoryId) }}</span>
+                      <div>
+                        <p class="transaction-category">
+                          {{ (categories() | slice:0:10).find(c => c.id === txn.categoryId)?.name || 'Transfer' }}
+                        </p>
+                        <p class="transaction-date">{{ txn.date }}</p>
+                      </div>
+                    </div>
+                    <span class="transaction-amount" [class]="txn.type">
+                      {{ txn.type === 'income' ? '+' : '-' }}${{ txn.amount | number:'1.2-2' }}
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Budget Overview -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Budget Status</h2>
+              <a routerLink="/budget" class="view-all">View All →</a>
+            </div>
+
+            @if (budgetStatus().length === 0) {
+              <div class="empty-state">
+                <p>No budgets set yet</p>
+              </div>
+            } @else {
+              <div class="budget-list">
+                @for (budget of budgetStatus(); track budget.id) {
+                  <div class="budget-item">
+                    <div class="budget-info">
+                      <span class="budget-name">{{ budget.categoryName || 'Category' }}</span>
+                      <span class="budget-amount">
+                        ${{ (budget.spent || 0) | number:'1.2-2' }} / ${{ budget.amount | number:'1.2-2' }}
+                      </span>
+                    </div>
+                    <div class="progress-bar">
+                      <div 
+                        class="progress-fill"
+                        [class]="'progress-' + getProgressColor(budget.percentage)"
+                        [style.width.%]="budget.percentage"
+                      ></div>
+                    </div>
+                    <span class="budget-percentage">{{ budget.percentage | number:'1.0-0' }}%</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Category Breakdown -->
+        @if (categoryBreakdown().length > 0) {
+          <div class="card">
+            <div class="card-header">
+              <h2>Expense Breakdown by Category</h2>
+            </div>
+            <div class="category-breakdown">
+              @for (category of categoryBreakdown(); track category.name) {
+                <div class="category-item">
+                  <div class="category-info">
+                    <span class="category-name">{{ category.name }}</span>
+                    <span class="category-amount">${{ category.amount | number:'1.2-2' }}</span>
+                  </div>
+                  <div class="category-percentage">
+                    {{ ((category.amount / totalExpense()) * 100) | number:'1.0-0' }}%
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
     </div>
   </div>
 </div>
