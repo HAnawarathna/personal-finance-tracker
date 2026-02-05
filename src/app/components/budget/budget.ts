@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BudgetService, Budget } from '../../services/budget';
+import { BudgetService, Budget as BudgetModel } from '../../services/budget';
 import { CategoryService } from '../../services/category';
 
 @Component({
@@ -11,7 +11,7 @@ import { CategoryService } from '../../services/category';
   styleUrl: './budget.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BudgetComponent implements OnInit {
+export class Budget implements OnInit {
   private budgetService = inject(BudgetService);
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
@@ -23,7 +23,7 @@ export class BudgetComponent implements OnInit {
   error = this.budgetService.error;
   
   showModal = signal(false);
-  editingBudget = signal<Budget | null>(null);
+  editingBudget = signal<BudgetModel | null>(null);
   isEditing = computed(() => this.editingBudget() !== null);
 
   totalBudget = computed(() => 
@@ -64,7 +64,7 @@ export class BudgetComponent implements OnInit {
     this.showModal.set(true);
   }
 
-  openEditModal(budget: Budget): void {
+  openEditModal(budget: BudgetModel): void {
     this.editingBudget.set(budget);
     this.budgetForm.patchValue({
       categoryId: budget.categoryId,
@@ -106,7 +106,7 @@ export class BudgetComponent implements OnInit {
     }
   }
 
-  deleteBudget(budget: Budget): void {
+  deleteBudget(budget: BudgetModel): void {
     if (!budget.id) return;
     
     const categoryName = budget.categoryName || 'this budget';
@@ -117,7 +117,7 @@ export class BudgetComponent implements OnInit {
     }
   }
 
-  getPercentage(budget: Budget): number {
+  getPercentage(budget: BudgetModel): number {
     if (budget.amount === 0) return 0;
     return Math.min(((budget.spent || 0) / budget.amount) * 100, 100);
   }
