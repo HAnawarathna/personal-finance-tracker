@@ -1,29 +1,67 @@
-<div class="container mt-5" style="max-width: 500px;">
-  <h2 class="mb-3">Login</h2>
+<div class="login-page">
+  <div class="login-card">
+    <section class="login-hero">
+      <div class="brand">
+        <span class="brand-mark">💰</span>
+        <div>
+          <p class="brand-name">Finance Flow</p>
+          <p class="brand-tagline">See your money move with clarity.</p>
+        </div>
+      </div>
+      <div class="hero-copy">
+        <h1>Welcome back</h1>
+        <p>Track income, keep budgets steady, and make every rupee count.</p>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">live insights</span>
+        </div>
+        <div>
+          <span class="stat-value">1 place</span>
+          <span class="stat-label">all accounts</span>
+        </div>
+      </div>
+    </section>
 
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <section class="login-form">
+      <h2>Sign in</h2>
+      <p class="subtitle">Use your email and password to continue.</p>
 
-  <div class="mb-2">
-    <input
-      class="form-control"
-      placeholder="Email"
-      [(ngModel)]="email"
-      name="email"
-      type="email"
-    />
+      @if (error) {
+        <div class="alert" role="alert">{{ error }}</div>
+      }
+
+      <label class="field" for="login-email">
+        <span>Email</span>
+        <input
+          id="login-email"
+          placeholder="you@email.com"
+          [(ngModel)]="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+        />
+      </label>
+
+      <label class="field" for="login-password">
+        <span>Password</span>
+        <input
+          id="login-password"
+          placeholder="Enter your password"
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+        />
+      </label>
+
+      <button class="btn-primary" (click)="onLogin()">Sign in</button>
+
+      <div class="form-footer">
+        <span>New here?</span>
+        <a routerLink="/register">Create an account</a>
+      </div>
+    </section>
   </div>
-
-  <div class="mb-3">
-    <input
-      class="form-control"
-      placeholder="Password"
-      [(ngModel)]="password"
-      name="password"
-      type="password"
-    />
-  </div>
-
-  <button class="btn btn-primary" (click)="onLogin()">Login</button>
-
-  <a class="ms-3" routerLink="/register">Register</a>
 </div>

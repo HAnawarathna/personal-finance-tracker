@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Transaction } from '../../services/transaction';
@@ -25,7 +25,7 @@ export interface TransactionModel {
   styleUrl: './dashboard.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard implements OnInit {
+export class Dashboard implements OnInit, OnDestroy {
   private transactionService = inject(Transaction);
   private budgetService = inject(BudgetService);
   private categoryService = inject(CategoryService);
@@ -36,6 +36,20 @@ export class Dashboard implements OnInit {
   budgets = this.budgetService.budgets;
   categories = this.categoryService.categories;
   loading = signal(false);
+  currentTime = signal('');
+  currentDate = signal('');
+
+  private clockTimer: ReturnType<typeof setInterval> | null = null;
+  private timeFormatter = new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+  private dateFormatter = new Intl.DateTimeFormat(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: '2-digit',
+  });
 
   recentTransactions = computed(() => 
     this.transactions().slice(0, 5)
@@ -79,6 +93,15 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.updateClock();
+    this.clockTimer = setInterval(() => this.updateClock(), 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.clockTimer) {
+      clearInterval(this.clockTimer);
+      this.clockTimer = null;
+    }
   }
 
   loadData(): void {
@@ -115,6 +138,12 @@ export class Dashboard implements OnInit {
         this.loading.set(false);
       });
     });
+  }
+
+  private updateClock(): void {
+    const now = new Date();
+    this.currentTime.set(this.timeFormatter.format(now));
+    this.currentDate.set(this.dateFormatter.format(now));
   }
 
   logout(): void {

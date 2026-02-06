@@ -31,9 +31,15 @@
     <header class="navbar">
       <div class="navbar-content">
         <h1 class="page-title">Dashboard</h1>
-        <button (click)="logout()" class="btn-logout">
-          <span>🚪</span> Logout
-        </button>
+        <div class="navbar-right">
+          <div class="clock" aria-live="polite">
+            <div class="clock-time">{{ currentTime() }}</div>
+            <div class="clock-date">{{ currentDate() }}</div>
+          </div>
+          <button (click)="logout()" class="btn-logout">
+            <span>🚪</span> Logout
+          </button>
+        </div>
       </div>
     </header>
 
