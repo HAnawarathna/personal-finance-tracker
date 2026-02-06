@@ -36,6 +36,9 @@
             <div class="clock-time">{{ currentTime() }}</div>
             <div class="clock-date">{{ currentDate() }}</div>
           </div>
+          <a routerLink="/register" class="btn-create">
+            <span>✨</span> Create Account
+          </a>
           <button (click)="logout()" class="btn-logout">
             <span>🚪</span> Logout
           </button>

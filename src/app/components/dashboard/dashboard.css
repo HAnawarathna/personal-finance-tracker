@@ -154,6 +154,27 @@
   color: var(--ink-500);
 }
 
+.btn-create {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--gold-500);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-create:hover {
+  background: rgba(217, 119, 6, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(217, 119, 6, 0.2);
+}
+
 .btn-logout {
   display: flex;
   align-items: center;
