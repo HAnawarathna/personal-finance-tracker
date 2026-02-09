@@ -18,14 +18,14 @@
   @if (alerts().length > 0) {
     <div class="alerts-section">
       <h2 class="section-title">
-        <span class="icon">\u26a0\ufe0f</span> Budget Alerts
+        <span class="icon">⚠️</span> Budget Alerts
       </h2>
       <div class="alerts-grid">
         @for (alert of alerts(); track alert.categoryId) {
           <div class="alert-card" [class]="'alert-' + alert.severity">
             <div class="alert-header">
               <span class="alert-icon">
-                {{ alert.severity === 'danger' ? '\ud83d\udea8' : '\u26a0\ufe0f' }}
+                {{ alert.severity === 'danger' ? '🚨' : '⚠️' }}
               </span>
               <h3>{{ alert.categoryName }}</h3>
             </div>
@@ -57,21 +57,21 @@
   <!-- Budget Overview -->
   <div class="overview-section">
     <div class="overview-card">
-      <div class="overview-icon total">\ud83d\udcb0</div>
+      <div class="overview-icon total">💰</div>
       <div class="overview-content">
         <h3>Total Budget</h3>
         <p class="amount">${{ totalBudget() | number:'1.2-2' }}</p>
       </div>
     </div>
     <div class="overview-card">
-      <div class="overview-icon spent">\ud83d\udcb8</div>
+      <div class="overview-icon spent">💸</div>
       <div class="overview-content">
         <h3>Total Spent</h3>
         <p class="amount">${{ totalSpent() | number:'1.2-2' }}</p>
       </div>
     </div>
     <div class="overview-card">
-      <div class="overview-icon remaining">\ud83d\udcb5</div>
+      <div class="overview-icon remaining">💵</div>
       <div class="overview-content">
         <h3>Remaining</h3>
         <p class="amount" [class.negative]="totalRemaining() < 0">
@@ -93,13 +93,13 @@
   @if (!loading() || budgets().length > 0) {
     <div class="budgets-section">
       <h2 class="section-title">
-        <span class="icon">\ud83d\udccb</span> Budget Details
+        <span class="icon">📋</span> Budget Details
         <span class="badge">{{ budgets().length }}</span>
       </h2>
       
       @if (budgets().length === 0) {
         <div class="empty-state">
-          <div class="empty-icon">\ud83d\udccb</div>
+          <div class="empty-icon">📋</div>
           <h3>No budgets set</h3>
           <p>Start managing your finances by setting budgets for your categories</p>
           <button class="btn btn-primary" (click)="openCreateModal()">Set Your First Budget</button>
@@ -115,10 +115,10 @@
                 </div>
                 <div class="budget-actions">
                   <button class="btn-icon" (click)="openEditModal(budget)" title="Edit">
-                    \u270f\ufe0f
+                    ✏️
                   </button>
                   <button class="btn-icon btn-danger" (click)="deleteBudget(budget)" title="Delete">
-                    \ud83d\uddd1\ufe0f
+                    🗑️
                   </button>
                 </div>
               </div>
@@ -153,7 +153,7 @@
                 </div>
                 
                 <div class="budget-dates">
-                  <span>\ud83d\udcc5 Started: {{ budget.startDate }}</span>
+                  <span>📅 Started: {{ budget.startDate }}</span>
                 </div>
               </div>
             </div>

@@ -98,12 +98,10 @@ export class Categories implements OnInit {
     if (editing && editing.id) {
       this.categoryService.updateCategory(editing.id, categoryData).subscribe({
         next: () => this.closeModal(),
-        error: (err) => console.error('Update failed:', err),
       });
     } else {
       this.categoryService.createCategory(categoryData).subscribe({
         next: () => this.closeModal(),
-        error: (err) => console.error('Create failed:', err),
       });
     }
   }
@@ -112,9 +110,7 @@ export class Categories implements OnInit {
     if (!category.id) return;
     
     if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
-      this.categoryService.deleteCategory(category.id).subscribe({
-        error: (err) => console.error('Delete failed:', err),
-      });
+      this.categoryService.deleteCategory(category.id).subscribe();
     }
   }
 }

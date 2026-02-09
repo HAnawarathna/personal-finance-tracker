@@ -96,12 +96,10 @@ export class Budget implements OnInit {
     if (editing && editing.id) {
       this.budgetService.updateBudget(editing.id, budgetData).subscribe({
         next: () => this.closeModal(),
-        error: (err) => console.error('Update failed:', err),
       });
     } else {
       this.budgetService.createBudget(budgetData).subscribe({
         next: () => this.closeModal(),
-        error: (err) => console.error('Create failed:', err),
       });
     }
   }
@@ -111,9 +109,7 @@ export class Budget implements OnInit {
     
     const categoryName = budget.categoryName || 'this budget';
     if (confirm(`Are you sure you want to delete the budget for "${categoryName}"?`)) {
-      this.budgetService.deleteBudget(budget.id).subscribe({
-        error: (err) => console.error('Delete failed:', err),
-      });
+      this.budgetService.deleteBudget(budget.id).subscribe();
     }
   }
 

@@ -13,13 +13,13 @@ import { Router, RouterLink } from '@angular/router';
 export class Login {
   private router = inject(Router);
 
-  email = '';
+  username = '';
   password = '';
   error = '';
 
   onLogin() {
-    if (!this.email || !this.password) {
-      this.error = 'Please enter email and password.';
+    if (!this.username || !this.password) {
+      this.error = 'Please enter username and password.';
       return;
     }
 

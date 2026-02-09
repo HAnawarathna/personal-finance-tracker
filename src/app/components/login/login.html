@@ -26,21 +26,21 @@
 
     <section class="login-form">
       <h2>Sign in</h2>
-      <p class="subtitle">Use your email and password to continue.</p>
+      <p class="subtitle">Use your username and password to continue.</p>
 
       @if (error) {
         <div class="alert" role="alert">{{ error }}</div>
       }
 
-      <label class="field" for="login-email">
-        <span>Email</span>
+      <label class="field" for="login-username">
+        <span>Username</span>
         <input
-          id="login-email"
-          placeholder="you@email.com"
-          [(ngModel)]="email"
-          name="email"
-          type="email"
-          autocomplete="email"
+          id="login-username"
+          placeholder="your username"
+          [(ngModel)]="username"
+          name="username"
+          type="text"
+          autocomplete="username"
         />
       </label>
 

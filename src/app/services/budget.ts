@@ -1,6 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, EMPTY, catchError, finalize, of, shareReplay, tap } from 'rxjs';
+import { Auth } from './auth';
+import { toUserMessage } from './api-errors';
 
 export interface Budget {
   id?: string;
@@ -30,85 +32,126 @@ export interface BudgetAlert {
 })
 export class BudgetService {
   private http = inject(HttpClient);
+  private auth = inject(Auth);
   private apiUrl = 'http://localhost:3000/api/budgets';
+  private inFlight: Observable<Budget[]> | null = null;
   
   budgets = signal<Budget[]>([]);
   alerts = signal<BudgetAlert[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
-  getBudgets(): Observable<Budget[]> {
+  getBudgets(force = false): Observable<Budget[]> {
+    if (!force && this.budgets().length > 0) {
+      return of(this.budgets());
+    }
+
+    if (!this.auth.getToken()) {
+      this.error.set('Please sign in to load budgets.');
+      return of([]);
+    }
+
+    if (this.inFlight) {
+      return this.inFlight;
+    }
+
     this.loading.set(true);
     this.error.set(null);
-    return this.http.get<Budget[]>(this.apiUrl).pipe(
-      tap({
-        next: (budgets) => {
-          this.budgets.set(budgets);
-          this.calculateAlerts(budgets);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set('Failed to load budgets');
-          this.loading.set(false);
-        },
+    this.inFlight = this.http.get<Budget[]>(this.apiUrl).pipe(
+      tap((budgets) => {
+        this.budgets.set(budgets);
+        this.calculateAlerts(budgets);
+      }),
+      catchError((err) => {
+        this.error.set(toUserMessage(err, 'Failed to load budgets'));
+        return of([]);
+      }),
+      finalize(() => {
+        this.loading.set(false);
+        this.inFlight = null;
+      }),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+
+    return this.inFlight;
+  }
+
+  getBudget(id: string): Observable<Budget> {
+    if (!this.auth.getToken()) {
+      this.error.set('Please sign in to load budgets.');
+      return EMPTY;
+    }
+
+    return this.http.get<Budget>(`${this.apiUrl}/${id}`).pipe(
+      catchError((err) => {
+        this.error.set(toUserMessage(err, 'Failed to load budget'));
+        return EMPTY;
       })
     );
   }
 
-  getBudget(id: string): Observable<Budget> {
-    return this.http.get<Budget>(`${this.apiUrl}/${id}`);
-  }
-
   createBudget(budget: Omit<Budget, 'id'>): Observable<Budget> {
+    if (!this.auth.getToken()) {
+      this.error.set('Please sign in to create budgets.');
+      return EMPTY;
+    }
+
     this.loading.set(true);
+    this.error.set(null);
     return this.http.post<Budget>(this.apiUrl, budget).pipe(
-      tap({
-        next: (newBudget) => {
-          this.budgets.update(budgets => [...budgets, newBudget]);
-          this.calculateAlerts(this.budgets());
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set('Failed to create budget');
-          this.loading.set(false);
-        },
-      })
+      tap((newBudget) => {
+        this.budgets.update((budgets) => [...budgets, newBudget]);
+        this.calculateAlerts(this.budgets());
+      }),
+      catchError((err) => {
+        this.error.set(toUserMessage(err, 'Failed to create budget'));
+        return EMPTY;
+      }),
+      finalize(() => this.loading.set(false))
     );
   }
 
   updateBudget(id: string, budget: Partial<Budget>): Observable<Budget> {
+    if (!this.auth.getToken()) {
+      this.error.set('Please sign in to update budgets.');
+      return EMPTY;
+    }
+
     this.loading.set(true);
+    this.error.set(null);
     return this.http.put<Budget>(`${this.apiUrl}/${id}`, budget).pipe(
-      tap({
-        next: (updatedBudget) => {
-          this.budgets.update(budgets => 
-            budgets.map(b => b.id === id ? updatedBudget : b)
-          );
-          this.calculateAlerts(this.budgets());
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set('Failed to update budget');
-          this.loading.set(false);
-        },
-      })
+      tap((updatedBudget) => {
+        this.budgets.update((budgets) =>
+          budgets.map((b) => (b.id === id ? updatedBudget : b))
+        );
+        this.calculateAlerts(this.budgets());
+      }),
+      catchError((err) => {
+        this.error.set(toUserMessage(err, 'Failed to update budget'));
+        return EMPTY;
+      }),
+      finalize(() => this.loading.set(false))
     );
   }
 
   deleteBudget(id: string): Observable<void> {
+    if (!this.auth.getToken()) {
+      this.error.set('Please sign in to delete budgets.');
+      return EMPTY;
+    }
+
     this.loading.set(true);
+    this.error.set(null);
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      tap({
-        next: () => {
-          this.budgets.update(budgets => budgets.filter(b => b.id !== id));
-          this.calculateAlerts(this.budgets());
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set('Failed to delete budget');
-          this.loading.set(false);
-        },
-      })
+      tap(() => {
+        this.budgets.update((budgets) => budgets.filter((b) => b.id !== id));
+        this.calculateAlerts(this.budgets());
+      }),
+      catchError((err) => {
+        this.error.set(toUserMessage(err, 'Failed to delete budget'));
+        return EMPTY;
+      }),
+      finalize(() => this.loading.set(false))
     );
   }
 

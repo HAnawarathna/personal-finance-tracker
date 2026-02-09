@@ -5,6 +5,7 @@ import { Transaction } from '../../services/transaction';
 import { BudgetService } from '../../services/budget';
 import { CategoryService } from '../../services/category';
 import { Auth } from '../../services/auth';
+import { finalize, forkJoin } from 'rxjs';
 
 export interface TransactionModel {
   id?: string;
@@ -106,38 +107,15 @@ export class Dashboard implements OnInit, OnDestroy {
 
   loadData(): void {
     this.loading.set(true);
-    // Load mock data for demo
-    this.transactions.set([
-      {
-        id: '1',
-        type: 'income',
-        categoryId: 'salary',
-        amount: 5000,
-        description: 'Monthly Salary',
-        date: new Date().toISOString().split('T')[0],
-      },
-      {
-        id: '2',
-        type: 'expense',
-        categoryId: 'food',
-        amount: 150,
-        description: 'Groceries',
-        date: new Date().toISOString().split('T')[0],
-      },
-      {
-        id: '3',
-        type: 'expense',
-        categoryId: 'transport',
-        amount: 50,
-        description: 'Gas',
-        date: new Date().toISOString().split('T')[0],
-      },
-    ]);
-    this.budgetService.getBudgets().subscribe(() => {
-      this.categoryService.getCategories().subscribe(() => {
-        this.loading.set(false);
+    forkJoin({
+      transactions: this.transactionService.getTransactions(),
+      budgets: this.budgetService.getBudgets(),
+      categories: this.categoryService.getCategories(),
+    })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe(({ transactions }) => {
+        this.transactions.set(transactions);
       });
-    });
   }
 
   private updateClock(): void {
@@ -147,7 +125,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this.authService.clearToken();
     this.router.navigate(['/login']);
   }
 
