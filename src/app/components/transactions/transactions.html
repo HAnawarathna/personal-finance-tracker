@@ -1,65 +1,166 @@
-<div class="container mt-4">
-  <h2 class="mb-3">Transactions</h2>
+<div class="transactions-container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2 class="logo">💰 Finance</h2>
+    </div>
 
-  <!-- Add Transaction Form -->
-  <div class="card p-3 mb-4">
-    <h5>Add Transaction</h5>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/transactions" class="nav-item active">
+        <span class="icon">💳</span>
+        <span>Transactions</span>
+      </a>
+      <a routerLink="/categories" class="nav-item">
+        <span class="icon">🏷️</span>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/budget" class="nav-item">
+        <span class="icon">📋</span>
+        <span>Budget</span>
+      </a>
+    </nav>
+  </aside>
 
-    <div class="row g-2">
-      <div class="col-md-3">
-        <input class="form-control" placeholder="Title" />
+  <div class="main-content">
+    <header class="navbar">
+      <div class="navbar-content">
+        <div>
+          <h1 class="page-title">Transactions</h1>
+          <p class="page-subtitle">Track every rupee with clean categorization and quick actions.</p>
+        </div>
+        <div class="navbar-actions">
+          <button class="btn-secondary">Export</button>
+          <button class="btn-primary">New Transaction</button>
+        </div>
       </div>
+    </header>
 
-      <div class="col-md-2">
-        <input class="form-control" type="number" placeholder="Amount" />
-      </div>
+    <div class="content">
+      <div class="content-grid">
+        <div class="card form-card">
+          <div class="card-header">
+            <h2>Add Transaction</h2>
+            <span class="helper-text">Add income or expense instantly</span>
+          </div>
 
-      <div class="col-md-2">
-        <select class="form-select">
-          <option>Income</option>
-          <option>Expense</option>
-        </select>
-      </div>
+          <form class="form-grid">
+            <label class="form-field">
+              <span>Title</span>
+              <input type="text" placeholder="Salary payment" />
+            </label>
 
-      <div class="col-md-3">
-        <select class="form-select">
-          <option>Food</option>
-          <option>Travel</option>
-          <option>Salary</option>
-          <option>Other</option>
-        </select>
-      </div>
+            <label class="form-field">
+              <span>Amount</span>
+              <input type="number" placeholder="0.00" />
+            </label>
 
-      <div class="col-md-2">
-        <button class="btn btn-primary w-100">Add</button>
+            <label class="form-field">
+              <span>Type</span>
+              <select>
+                <option>Income</option>
+                <option>Expense</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Category</span>
+              <select>
+                <option>Food</option>
+                <option>Travel</option>
+                <option>Salary</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>Date</span>
+              <input type="date" />
+            </label>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary">Clear</button>
+              <button type="submit" class="btn-primary">Add Transaction</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card table-card">
+          <div class="card-header">
+            <h2>All Transactions</h2>
+            <div class="table-actions">
+              <input class="table-search" placeholder="Search title or category" />
+              <select class="table-filter">
+                <option>All Types</option>
+                <option>Income</option>
+                <option>Expense</option>
+              </select>
+              <select class="table-filter">
+                <option>All Categories</option>
+                <option>Food</option>
+                <option>Travel</option>
+                <option>Salary</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="transactions-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Amount</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="title-cell">
+                      <span class="title-icon">💼</span>
+                      <div>
+                        <div class="title-main">Sample</div>
+                        <div class="title-sub">Monthly salary</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="amount-cell">+ $1,000.00</td>
+                  <td><span class="type-pill income">Income</span></td>
+                  <td>Salary</td>
+                  <td>2026-02-03</td>
+                  <td>
+                    <button class="btn-icon danger">Delete</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="title-cell">
+                      <span class="title-icon">🍔</span>
+                      <div>
+                        <div class="title-main">Lunch</div>
+                        <div class="title-sub">Cafe expense</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="amount-cell expense">- $12.00</td>
+                  <td><span class="type-pill expense">Expense</span></td>
+                  <td>Food</td>
+                  <td>2026-02-07</td>
+                  <td>
+                    <button class="btn-icon danger">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Transactions Table -->
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Amount</th>
-        <th>Type</th>
-        <th>Category</th>
-        <th>Date</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr>
-        <td>Sample</td>
-        <td>1000</td>
-        <td>Income</td>
-        <td>Salary</td>
-        <td>2026-02-03</td>
-        <td>
-          <button class="btn btn-sm btn-danger">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>
