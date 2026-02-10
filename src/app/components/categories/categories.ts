@@ -1,11 +1,13 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { CategoryService, Category } from '../../services/category';
 
 @Component({
   selector: 'app-categories',
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './categories.html',
   styleUrl: './categories.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
