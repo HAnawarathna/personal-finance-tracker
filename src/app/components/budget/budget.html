@@ -1,11 +1,54 @@
-<div class="budget-container">
-  <!-- Header -->
-  <div class="header">
-    <h1>Budget Management</h1>
-    <button class="btn btn-primary" (click)="openCreateModal()">
-      <span class="icon">+</span> Set Budget
-    </button>
-  </div>
+<div class="budget-layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2 class="logo">ðŸ’° Finance</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="icon">ðŸ“Š</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/transactions" class="nav-item">
+        <span class="icon">ðŸ’³</span>
+        <span>Transactions</span>
+      </a>
+      <a routerLink="/categories" class="nav-item">
+        <span class="icon">ðŸ·ï¸</span>
+        <span>Categories</span>
+      </a>
+      <a routerLink="/budget" class="nav-item active">
+        <span class="icon">ðŸ“‹</span>
+        <span>Budget</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <img
+          class="user-avatar"
+          alt="User avatar"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230ea5a4' offset='0'/><stop stop-color='%231f7a75' offset='1'/></linearGradient></defs><circle cx='32' cy='32' r='32' fill='url(%23g)'/><text x='32' y='38' font-size='20' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>SP</text></svg>"
+        />
+        <div class="user-details">
+          <div class="user-name">S. Perera</div>
+          <div class="user-email">s.perera@email.com</div>
+        </div>
+        <button class="user-action">View</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="content">
+      <div class="budget-container">
+        <!-- Header -->
+        <div class="header">
+          <h1>Budget Management</h1>
+          <button class="btn btn-primary" (click)="openCreateModal()">
+            <span class="icon">+</span> Set Budget
+          </button>
+        </div>
 
   <!-- Error Message -->
   @if (error()) {
@@ -254,4 +297,7 @@
       </div>
     </div>
   }
+      </div>
+    </div>
+  </div>
 </div>
