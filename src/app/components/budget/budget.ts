@@ -1,12 +1,14 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { BudgetService, Budget as BudgetModel } from '../../services/budget';
 import { CategoryService } from '../../services/category';
 
 @Component({
   selector: 'app-budget',
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './budget.html',
   styleUrl: './budget.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
