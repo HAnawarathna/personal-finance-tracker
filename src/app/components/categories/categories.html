@@ -1,24 +1,24 @@
-<div class="categories-layout">
+﻿<div class="categories-layout">
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h2 class="logo">ðŸ’° Finance</h2>
+      <h2 class="logo">&#x1F4B0; Finance</h2>
     </div>
 
     <nav class="sidebar-nav">
       <a routerLink="/dashboard" class="nav-item">
-        <span class="icon">ðŸ“Š</span>
+        <span class="icon">&#x1F4CA;</span>
         <span>Dashboard</span>
       </a>
       <a routerLink="/transactions" class="nav-item">
-        <span class="icon">ðŸ’³</span>
+        <span class="icon">&#x1F4B3;</span>
         <span>Transactions</span>
       </a>
       <a routerLink="/categories" class="nav-item active">
-        <span class="icon">ðŸ·ï¸</span>
+        <span class="icon">&#x1F3F7;&#xFE0F;</span>
         <span>Categories</span>
       </a>
       <a routerLink="/budget" class="nav-item">
-        <span class="icon">ðŸ“‹</span>
+        <span class="icon">&#x1F4CB;</span>
         <span>Budget</span>
       </a>
     </nav>
@@ -71,7 +71,7 @@
       <!-- Income Categories -->
       <div class="category-section">
         <h2 class="section-title">
-          <span class="icon">💵</span> Income Categories
+          <span class="icon">&#x1F4B5;</span> Income Categories
           <span class="badge">{{ incomeCategories().length }}</span>
         </h2>
         
@@ -92,12 +92,8 @@
                   </div>
                 </div>
                 <div class="category-actions">
-                  <button class="btn-icon" (click)="openEditModal(category)" title="Edit">
-                    ✏️
-                  </button>
-                  <button class="btn-icon btn-danger" (click)="deleteCategory(category)" title="Delete">
-                    🗑️
-                  </button>
+                  <button class="btn-icon" (click)="openEditModal(category)" title="Edit">&#x270F;&#xFE0F;</button>
+                  <button class="btn-icon btn-danger" (click)="deleteCategory(category)" title="Delete">&#x1F5D1;&#xFE0F;</button>
                 </div>
               </div>
             }
@@ -108,7 +104,7 @@
       <!-- Expense Categories -->
       <div class="category-section">
         <h2 class="section-title">
-          <span class="icon">💸</span> Expense Categories
+          <span class="icon">&#x1F4B8;</span> Expense Categories
           <span class="badge">{{ expenseCategories().length }}</span>
         </h2>
         
@@ -129,12 +125,8 @@
                   </div>
                 </div>
                 <div class="category-actions">
-                  <button class="btn-icon" (click)="openEditModal(category)" title="Edit">
-                    ✏️
-                  </button>
-                  <button class="btn-icon btn-danger" (click)="deleteCategory(category)" title="Delete">
-                    🗑️
-                  </button>
+                  <button class="btn-icon" (click)="openEditModal(category)" title="Edit">&#x270F;&#xFE0F;</button>
+                  <button class="btn-icon btn-danger" (click)="deleteCategory(category)" title="Delete">&#x1F5D1;&#xFE0F;</button>
                 </div>
               </div>
             }
@@ -235,3 +227,4 @@
     </div>
   </div>
 </div>
+
