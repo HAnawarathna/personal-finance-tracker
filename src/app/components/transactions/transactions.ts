@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-transactions',
-  imports: [],
+  standalone: true,
+  imports: [RouterLink],
   templateUrl: './transactions.html',
   styleUrl: './transactions.css',
 })
