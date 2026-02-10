@@ -182,17 +182,19 @@
 .btn-secondary {
   border: none;
   border-radius: 0.75rem;
-  padding: 0.65rem 1.25rem;
+  padding: 0.65rem 1.3rem;
+  min-height: 42px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 0.95rem;
+  letter-spacing: 0.01em;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, #0f766e, #14b8a6);
   color: #ffffff;
-  box-shadow: 0 10px 18px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 10px 18px rgba(15, 118, 110, 0.22);
 }
 
 .btn-primary:hover {
@@ -200,13 +202,28 @@
   box-shadow: 0 14px 20px rgba(15, 118, 110, 0.3);
 }
 
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 16px rgba(15, 118, 110, 0.22);
+}
+
 .btn-secondary {
-  background: rgba(15, 118, 110, 0.1);
+  background: #ffffff;
+  border: 1px solid rgba(15, 118, 110, 0.25);
   color: var(--teal-700);
+  box-shadow: 0 8px 16px rgba(15, 118, 110, 0.08);
 }
 
 .btn-secondary:hover {
-  background: rgba(15, 118, 110, 0.18);
+  background: rgba(15, 118, 110, 0.08);
+  border-color: rgba(15, 118, 110, 0.4);
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-icon:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.25);
 }
 
 /* Form */
@@ -360,17 +377,20 @@
 
 .btn-icon {
   border: none;
-  background: rgba(225, 29, 72, 0.12);
+  background: #ffffff;
   color: var(--rose-500);
-  padding: 0.45rem 0.8rem;
-  border-radius: 0.65rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+  min-height: 36px;
 }
 
 .btn-icon:hover {
-  background: rgba(225, 29, 72, 0.2);
+  background: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.5);
 }
 
 @keyframes card-fade {
