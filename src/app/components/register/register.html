@@ -1,1 +1,93 @@
-<p>register works!</p>
+<div class="register-page">
+  <div class="register-card">
+    <section class="register-hero">
+      <div class="brand">
+        <span class="brand-mark">💫</span>
+        <div>
+          <p class="brand-name">Finance Flow</p>
+          <p class="brand-tagline">Create your personal money command center.</p>
+        </div>
+      </div>
+      <div class="hero-copy">
+        <h1>Start with a fresh dashboard</h1>
+        <p>Build budgets, track spending, and stay ahead of every goal.</p>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <span class="stat-value">3 mins</span>
+          <span class="stat-label">setup time</span>
+        </div>
+        <div>
+          <span class="stat-value">100%</span>
+          <span class="stat-label">clarity</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="register-form">
+      <h2>Create account</h2>
+      <p class="subtitle">Tell us about you, then start tracking.</p>
+
+      @if (error) {
+        <div class="alert" role="alert">{{ error }}</div>
+      }
+
+      <label class="field" for="register-name">
+        <span>Full name</span>
+        <input
+          id="register-name"
+          placeholder="Optional"
+          [(ngModel)]="name"
+          name="name"
+          type="text"
+          autocomplete="name"
+        />
+      </label>
+
+      <label class="field" for="register-email">
+        <span>Email address</span>
+        <input
+          id="register-email"
+          placeholder="you@example.com"
+          [(ngModel)]="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+        />
+      </label>
+
+      <label class="field" for="register-password">
+        <span>Password</span>
+        <input
+          id="register-password"
+          placeholder="At least 6 characters"
+          [(ngModel)]="password"
+          name="password"
+          type="password"
+          autocomplete="new-password"
+        />
+      </label>
+
+      <label class="field" for="register-confirm">
+        <span>Confirm password</span>
+        <input
+          id="register-confirm"
+          placeholder="Re-enter your password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          autocomplete="new-password"
+        />
+      </label>
+
+      <button class="btn-primary" (click)="onRegister()" [disabled]="loading">
+        {{ loading ? 'Creating account...' : 'Create account' }}
+      </button>
+
+      <div class="form-footer">
+        <span>Already have an account?</span>
+        <a routerLink="/">Sign in</a>
+      </div>
+    </section>
+  </div>
+</div>
