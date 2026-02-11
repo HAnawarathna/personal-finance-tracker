@@ -124,6 +124,18 @@
     </div>
   </div>
 
+  <!-- Transaction Quick Add -->
+  <div class="transaction-box">
+    <div class="transaction-box-icon">🧾</div>
+    <div class="transaction-box-content">
+      <h3>Add Transaction</h3>
+      <p>Log income or expenses to keep budgets accurate.</p>
+    </div>
+    <a routerLink="/transactions" class="btn btn-primary">
+      Add Transaction
+    </a>
+  </div>
+
   <!-- Loading State -->
   @if (loading() && budgets().length === 0) {
     <div class="loading">
