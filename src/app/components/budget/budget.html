@@ -45,9 +45,17 @@
         <!-- Header -->
         <div class="header">
           <h1>Budget Management</h1>
-          <button class="btn btn-primary" (click)="openCreateModal()">
-            <span class="icon">+</span> Set Budget
-          </button>
+          <div class="header-actions">
+            <button class="btn btn-outline" type="button">
+              <span class="icon">⬇️</span> Export
+            </button>
+            <a routerLink="/transactions" class="btn btn-secondary">
+              <span class="icon">🧾</span> New Transaction
+            </a>
+            <button class="btn btn-primary" (click)="openCreateModal()">
+              <span class="icon">+</span> Set Budget
+            </button>
+          </div>
         </div>
 
   <!-- Error Message -->

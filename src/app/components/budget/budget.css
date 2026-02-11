@@ -169,6 +169,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  gap: 1rem;
 }
 
 .header h1 {
@@ -176,6 +177,14 @@
   font-weight: 700;
   color: #1f2937;
   margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 /* Buttons */
@@ -206,6 +215,19 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.btn-outline:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.15);
 }
 
 .btn-secondary {
@@ -798,6 +820,11 @@
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
   
   .overview-section,
