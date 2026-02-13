@@ -301,6 +301,9 @@
   cursor: pointer;
   box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16);
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  line-height: 1;
+  min-height: 40px;
+  justify-content: center;
 }
 
 .btn-logout:hover {
