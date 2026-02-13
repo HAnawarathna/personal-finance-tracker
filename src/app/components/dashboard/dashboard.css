@@ -289,34 +289,32 @@
 }
 
 .btn-logout {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #0f172a;
+  gap: 0.6rem;
+  padding: 0.55rem 1.15rem 0.55rem 0.8rem;
+  background: linear-gradient(135deg, #0f172a, #0f766e);
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(15, 23, 42, 0.15);
   border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.logout-icon {
-  width: 1.8rem;
-  height: 1.8rem;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 0.95rem;
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   line-height: 1;
+  min-height: 40px;
+  justify-content: center;
 }
 
 .btn-logout:hover {
-  background: #1f2937;
   transform: translateY(-2px);
-  box-shadow: 0 10px 16px rgba(15, 23, 42, 0.25);
+  background: linear-gradient(135deg, #0b1220, #0d9488);
+  box-shadow: 0 16px 24px rgba(15, 23, 42, 0.22);
+}
+
+.btn-logout:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.25);
 }
 
 /* Content */
