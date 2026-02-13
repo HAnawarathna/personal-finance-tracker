@@ -303,18 +303,6 @@
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
-.logout-icon {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.7rem;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.18);
-  font-size: 0.9rem;
-  line-height: 1;
-  font-weight: 700;
-}
-
 .btn-logout:hover {
   transform: translateY(-2px);
   background: linear-gradient(135deg, #0b1220, #0d9488);
