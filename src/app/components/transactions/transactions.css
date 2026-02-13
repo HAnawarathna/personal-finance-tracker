@@ -181,6 +181,8 @@
   gap: 0.6rem;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  line-height: 1;
+  min-height: 42px;
 }
 
 .logout-btn:hover {
