@@ -165,6 +165,37 @@
   background: rgba(248, 250, 252, 0.28);
 }
 
+.logout-btn {
+  margin-top: 0.85rem;
+  width: 100%;
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.16), rgba(248, 250, 252, 0.08));
+  color: #ffffff;
+  padding: 0.7rem 1rem;
+  border-radius: 0.85rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.logout-btn:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.24), rgba(248, 250, 252, 0.12));
+  border-color: rgba(248, 250, 252, 0.35);
+  box-shadow: 0 12px 20px rgba(15, 23, 42, 0.25);
+}
+
+.logout-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(248, 250, 252, 0.35);
+}
+
+
 /* Main */
 .main-content {
   flex: 1;
