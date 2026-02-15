@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -12,7 +12,7 @@ import { CategoryService, Category } from '../../services/category';
   styleUrl: './categories.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Categories implements OnInit {
+export class Categories implements OnInit, OnDestroy {
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
 
@@ -22,7 +22,9 @@ export class Categories implements OnInit {
   
   showModal = signal(false);
   editingCategory = signal<Category | null>(null);
+  toastMessage = signal<string | null>(null);
   isEditing = computed(() => this.editingCategory() !== null);
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   incomeCategories = computed(() => 
     this.categories().filter(cat => cat.type === 'income')
@@ -53,8 +55,12 @@ export class Categories implements OnInit {
     this.loadCategories();
   }
 
-  loadCategories(): void {
-    this.categoryService.getCategories().subscribe();
+  ngOnDestroy(): void {
+    this.clearToastTimer();
+  }
+
+  loadCategories(force = false): void {
+    this.categoryService.getCategories(force).subscribe();
   }
 
   openCreateModal(): void {
@@ -86,7 +92,10 @@ export class Categories implements OnInit {
   }
 
   saveCategory(): void {
-    if (this.categoryForm.invalid) return;
+    if (this.categoryForm.invalid) {
+      this.categoryForm.markAllAsTouched();
+      return;
+    }
 
     const formValue = this.categoryForm.value;
     const categoryData = {
@@ -99,11 +108,19 @@ export class Categories implements OnInit {
     const editing = this.editingCategory();
     if (editing && editing.id) {
       this.categoryService.updateCategory(editing.id, categoryData).subscribe({
-        next: () => this.closeModal(),
+        next: () => {
+          this.loadCategories(true);
+          this.closeModal();
+          this.showToast('Category updated successfully.');
+        },
       });
     } else {
       this.categoryService.createCategory(categoryData).subscribe({
-        next: () => this.closeModal(),
+        next: () => {
+          this.loadCategories(true);
+          this.closeModal();
+          this.showToast('Category added successfully.');
+        },
       });
     }
   }
@@ -113,6 +130,22 @@ export class Categories implements OnInit {
     
     if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
       this.categoryService.deleteCategory(category.id).subscribe();
+    }
+  }
+
+  private showToast(message: string): void {
+    this.toastMessage.set(message);
+    this.clearToastTimer();
+    this.toastTimer = setTimeout(() => {
+      this.toastMessage.set(null);
+      this.toastTimer = null;
+    }, 3000);
+  }
+
+  private clearToastTimer(): void {
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer);
+      this.toastTimer = null;
     }
   }
 }

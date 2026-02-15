@@ -8,11 +8,13 @@ import { Categories } from './components/categories/categories';
 import { Budget } from './components/budget/budget';
 
 export const routes: Routes = [
-  { path: '', component: Login },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: 'login', component: Login },
   { path: 'register', component: Register },
 
   { path: 'dashboard', component: Dashboard },
   { path: 'transactions', component: Transactions },
   { path: 'categories', component: Categories },
   { path: 'budget', component: Budget },
+  { path: '**', redirectTo: 'login' },
 ];

@@ -42,6 +42,12 @@
   <div class="main-content">
     <div class="content">
       <div class="categories-container">
+        @if (toastMessage()) {
+          <div class="toast toast-success" role="status" aria-live="polite">
+            {{ toastMessage() }}
+          </div>
+        }
+
         <!-- Header -->
         <div class="header">
           <h1>Categories</h1>
