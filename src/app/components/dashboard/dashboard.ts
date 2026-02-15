@@ -125,6 +125,11 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    const shouldSignOut = window.confirm('Are you sure you want to sign out?');
+    if (!shouldSignOut) {
+      return;
+    }
+
     this.authService.clearToken();
     this.router.navigate(['/login']);
   }
