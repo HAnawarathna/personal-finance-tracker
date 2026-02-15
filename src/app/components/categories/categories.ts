@@ -59,8 +59,8 @@ export class Categories implements OnInit, OnDestroy {
     this.clearToastTimer();
   }
 
-  loadCategories(): void {
-    this.categoryService.getCategories().subscribe();
+  loadCategories(force = false): void {
+    this.categoryService.getCategories(force).subscribe();
   }
 
   openCreateModal(): void {
@@ -109,7 +109,7 @@ export class Categories implements OnInit, OnDestroy {
     if (editing && editing.id) {
       this.categoryService.updateCategory(editing.id, categoryData).subscribe({
         next: () => {
-          this.loadCategories();
+          this.loadCategories(true);
           this.closeModal();
           this.showToast('Category updated successfully.');
         },
@@ -117,7 +117,7 @@ export class Categories implements OnInit, OnDestroy {
     } else {
       this.categoryService.createCategory(categoryData).subscribe({
         next: () => {
-          this.loadCategories();
+          this.loadCategories(true);
           this.closeModal();
           this.showToast('Category added successfully.');
         },
