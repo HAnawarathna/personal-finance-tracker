@@ -26,7 +26,7 @@ export class Login {
 
   async onLogin() {
     if (!this.username || !this.password) {
-      this.error = 'Please enter email and password.';
+      this.error = 'Please enter username and password.';
       return;
     }
 
@@ -36,7 +36,7 @@ export class Login {
     try {
       const response = await firstValueFrom(
         this.authApi.login({
-          email: this.username.trim(),
+          username: this.username.trim(),
           password: this.password,
         })
       );
@@ -49,3 +49,5 @@ export class Login {
     }
   }
 }
+
+
