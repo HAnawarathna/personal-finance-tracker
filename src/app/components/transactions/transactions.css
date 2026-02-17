@@ -599,3 +599,66 @@
     min-width: auto;
   }
 }
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  background: var(--teal-700);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.3);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Empty and loading states */
+.empty-state,
+.loading-state {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--ink-500);
+}
+
+.empty-state p {
+  margin-bottom: 0.5rem;
+}
+
+.empty-hint {
+  font-size: 0.9rem;
+  color: var(--ink-500);
+}
+
+/* Form error text */
+.error-text {
+  font-size: 0.85rem;
+  color: var(--rose-500);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Alert styles */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
