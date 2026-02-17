@@ -56,7 +56,9 @@
         />
       </label>
 
-      <button class="btn-primary" (click)="onLogin()">Sign in</button>
+      <button class="btn-primary" (click)="onLogin()" [disabled]="loading">
+        {{ loading ? 'Signing in...' : 'Sign in' }}
+      </button>
 
       <div class="form-footer">
         <span>New here?</span>
