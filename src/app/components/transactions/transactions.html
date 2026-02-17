@@ -36,7 +36,7 @@
         </div>
         <button class="user-action">View</button>
       </div>
-      <button class="logout-btn" type="button">Log out</button>
+      <button class="logout-btn" type="button" (click)="logout()">Log out</button>
     </div>
   </aside>
 
@@ -48,11 +48,18 @@
           <p class="page-subtitle">Track every rupee with clean categorization and quick actions.</p>
         </div>
         <div class="navbar-actions">
-          <button class="btn-secondary header-action">Export</button>
-          <button class="btn-primary header-action">New Transaction</button>
+
         </div>
       </div>
     </header>
+
+    @if (toastMessage()) {
+      <div class="toast">{{ toastMessage() }}</div>
+    }
+
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
 
     <div class="content">
       <div class="content-grid">
@@ -62,43 +69,54 @@
             <span class="helper-text">Add income or expense instantly</span>
           </div>
 
-          <form class="form-grid">
+          <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()" class="form-grid">
             <label class="form-field">
               <span>Title</span>
-              <input type="text" placeholder="Salary payment" />
+              <input type="text" placeholder="Salary payment" formControlName="title" />
+              @if (transactionForm.get('title')?.touched && transactionForm.get('title')?.invalid) {
+                <span class="error-text">Title is required</span>
+              }
             </label>
 
             <label class="form-field">
               <span>Amount</span>
-              <input type="number" placeholder="0.00" />
+              <input type="number" placeholder="0.00" formControlName="amount" step="0.01" />
+              @if (transactionForm.get('amount')?.touched && transactionForm.get('amount')?.invalid) {
+                <span class="error-text">Valid amount is required</span>
+              }
             </label>
 
             <label class="form-field">
               <span>Type</span>
-              <select>
-                <option>Income</option>
-                <option>Expense</option>
+              <select formControlName="type" (change)="onTypeChange()">
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
               </select>
             </label>
 
             <label class="form-field">
               <span>Category</span>
-              <select>
-                <option>Food</option>
-                <option>Travel</option>
-                <option>Salary</option>
-                <option>Other</option>
+              <select formControlName="categoryId">
+                <option value="">Select category</option>
+                @for (category of currentCategories(); track category.id) {
+                  <option [value]="category.id">{{ category.icon }} {{ category.name }}</option>
+                }
               </select>
+              @if (transactionForm.get('categoryId')?.touched && transactionForm.get('categoryId')?.invalid) {
+                <span class="error-text">Category is required</span>
+              }
             </label>
 
             <label class="form-field">
               <span>Date</span>
-              <input type="date" />
+              <input type="date" formControlName="date" />
             </label>
 
             <div class="form-actions">
-              <button type="button" class="btn-secondary">Clear</button>
-              <button type="submit" class="btn-primary">Add Transaction</button>
+              <button type="button" class="btn-secondary" (click)="clearForm()">Clear</button>
+              <button type="submit" class="btn-primary" [disabled]="loading()">
+                {{ loading() ? 'Adding...' : 'Add Transaction' }}
+              </button>
             </div>
           </form>
         </div>
@@ -107,73 +125,89 @@
           <div class="card-header">
             <h2>All Transactions</h2>
             <div class="table-actions">
-              <input class="table-search" placeholder="Search title or category" />
-              <select class="table-filter">
-                <option>All Types</option>
-                <option>Income</option>
-                <option>Expense</option>
+              <input 
+                class="table-search" 
+                placeholder="Search title or category"
+                [value]="searchQuery()"
+                (input)="searchQuery.set($any($event.target).value)"
+              />
+              <select 
+                class="table-filter"
+                [value]="typeFilter()"
+                (change)="typeFilter.set($any($event.target).value)"
+              >
+                <option value="all">All Types</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
               </select>
-              <select class="table-filter">
-                <option>All Categories</option>
-                <option>Food</option>
-                <option>Travel</option>
-                <option>Salary</option>
-                <option>Other</option>
+              <select 
+                class="table-filter"
+                [value]="categoryFilter()"
+                (change)="categoryFilter.set($any($event.target).value)"
+              >
+                <option value="all">All Categories</option>
+                @for (category of categories(); track category.id) {
+                  <option [value]="category.id">{{ category.name }}</option>
+                }
               </select>
             </div>
           </div>
 
           <div class="table-wrap">
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Category</th>
-                  <th>Date</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="title-cell">
-                      <span class="title-icon">💼</span>
-                      <div>
-                        <div class="title-main">Sample</div>
-                        <div class="title-sub">Monthly salary</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="amount-cell">+ $1,000.00</td>
-                  <td><span class="type-pill income">Income</span></td>
-                  <td>Salary</td>
-                  <td>2026-02-03</td>
-                  <td>
-                    <button class="btn-icon danger">Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="title-cell">
-                      <span class="title-icon">🍔</span>
-                      <div>
-                        <div class="title-main">Lunch</div>
-                        <div class="title-sub">Cafe expense</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="amount-cell expense">- $12.00</td>
-                  <td><span class="type-pill expense">Expense</span></td>
-                  <td>Food</td>
-                  <td>2026-02-07</td>
-                  <td>
-                    <button class="btn-icon danger">Delete</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            @if (loading()) {
+              <div class="loading-state">Loading transactions...</div>
+            } @else if (filteredTransactions().length === 0) {
+              <div class="empty-state">
+                <p>No transactions found.</p>
+                <p class="empty-hint">Add your first transaction above to get started.</p>
+              </div>
+            } @else {
+              <table class="transactions-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (transaction of filteredTransactions(); track transaction.id) {
+                    <tr>
+                      <td>
+                        <div class="title-cell">
+                          <span class="title-icon">{{ getCategoryIcon(transaction.categoryId) }}</span>
+                          <div>
+                            <div class="title-main">{{ transaction.title }}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td [class]="'amount-cell ' + transaction.type">
+                        {{ formatAmount(transaction.amount, transaction.type) }}
+                      </td>
+                      <td>
+                        <span [class]="'type-pill ' + transaction.type">
+                          {{ transaction.type | titlecase }}
+                        </span>
+                      </td>
+                      <td>{{ getCategoryName(transaction.categoryId) }}</td>
+                      <td>{{ transaction.date }}</td>
+                      <td>
+                        <button 
+                          class="btn-icon danger" 
+                          (click)="deleteTransaction(transaction)"
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
           </div>
         </div>
       </div>

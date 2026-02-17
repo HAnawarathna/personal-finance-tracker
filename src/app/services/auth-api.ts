@@ -17,7 +17,7 @@ export interface RegisterPayload {
 }
 
 export interface LoginPayload {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -33,6 +33,12 @@ export class AuthApi {
   }
 
   login(payload: LoginPayload) {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, {
+      email: payload.username,
+      password: payload.password,
+    });
   }
 }
+
+
+

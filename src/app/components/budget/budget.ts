@@ -1,9 +1,10 @@
 import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { BudgetService, Budget as BudgetModel } from '../../services/budget';
 import { CategoryService } from '../../services/category';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-budget',
@@ -16,6 +17,8 @@ import { CategoryService } from '../../services/category';
 export class Budget implements OnInit {
   private budgetService = inject(BudgetService);
   private categoryService = inject(CategoryService);
+  private authService = inject(Auth);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
 
   budgets = this.budgetService.budgets;
@@ -129,5 +132,12 @@ export class Budget implements OnInit {
   getCategoryName(categoryId: string): string {
     const category = this.categories().find(c => c.id === categoryId);
     return category?.name || 'Unknown';
+  }
+
+  logout(): void {
+    if (confirm('Are you sure you want to sign out?')) {
+      this.authService.clearToken();
+      this.router.navigate(['/login']);
+    }
   }
 }

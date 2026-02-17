@@ -1,8 +1,9 @@
 import { Component, inject, signal, computed, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CategoryService, Category } from '../../services/category';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-categories',
@@ -14,6 +15,8 @@ import { CategoryService, Category } from '../../services/category';
 })
 export class Categories implements OnInit, OnDestroy {
   private categoryService = inject(CategoryService);
+  private authService = inject(Auth);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
 
   categories = this.categoryService.categories;
@@ -146,6 +149,13 @@ export class Categories implements OnInit, OnDestroy {
     if (this.toastTimer) {
       clearTimeout(this.toastTimer);
       this.toastTimer = null;
+    }
+  }
+
+  logout(): void {
+    if (confirm('Are you sure you want to sign out?')) {
+      this.authService.clearToken();
+      this.router.navigate(['/login']);
     }
   }
 }
