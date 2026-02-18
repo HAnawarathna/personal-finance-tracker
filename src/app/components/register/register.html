@@ -28,8 +28,8 @@
       <h2>Create account</h2>
       <p class="subtitle">Tell us about you, then start tracking.</p>
 
-      @if (error) {
-        <div class="alert" role="alert">{{ error }}</div>
+      @if (error()) {
+        <div class="alert" role="alert">{{ error() }}</div>
       }
 
       <label class="field" for="register-name">
@@ -80,8 +80,8 @@
         />
       </label>
 
-      <button class="btn-primary" (click)="onRegister()" [disabled]="loading">
-        {{ loading ? 'Creating account...' : 'Create account' }}
+      <button class="btn-primary" (click)="onRegister()" [disabled]="loading()">
+        {{ loading() ? 'Creating account...' : 'Create account' }}
       </button>
 
       <div class="form-footer">
