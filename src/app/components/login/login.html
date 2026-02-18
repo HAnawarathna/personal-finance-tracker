@@ -28,8 +28,8 @@
       <h2>Sign in</h2>
       <p class="subtitle">Use your username and password to continue.</p>
 
-      @if (error) {
-        <div class="alert" role="alert">{{ error }}</div>
+      @if (error()) {
+        <div class="alert" role="alert">{{ error() }}</div>
       }
 
       <label class="field" for="login-username">
@@ -56,8 +56,8 @@
         />
       </label>
 
-      <button class="btn-primary" (click)="onLogin()" [disabled]="loading">
-        {{ loading ? 'Signing in...' : 'Sign in' }}
+      <button class="btn-primary" (click)="onLogin()" [disabled]="loading()">
+        {{ loading() ? 'Signing in...' : 'Sign in' }}
       </button>
 
       <div class="form-footer">
