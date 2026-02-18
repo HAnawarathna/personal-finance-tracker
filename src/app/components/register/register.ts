@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -23,27 +23,27 @@ export class Register {
   email = '';
   password = '';
   confirmPassword = '';
-  error = '';
-  loading = false;
+  error = signal('');
+  loading = signal(false);
 
   async onRegister() {
     if (!this.email || !this.password) {
-      this.error = 'Email and password are required.';
+      this.error.set('Email and password are required.');
       return;
     }
 
     if (this.password.length < 6) {
-      this.error = 'Password must be at least 6 characters.';
+      this.error.set('Password must be at least 6 characters.');
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      this.error = 'Passwords do not match.';
+      this.error.set('Passwords do not match.');
       return;
     }
 
-    this.error = '';
-    this.loading = true;
+    this.error.set('');
+    this.loading.set(true);
 
     try {
       const response = await firstValueFrom(
@@ -56,9 +56,9 @@ export class Register {
       this.auth.setToken(response.token);
       this.router.navigate(['/dashboard']);
     } catch (err) {
-      this.error = toUserMessage(err, 'Unable to create account. Please try again.');
+      this.error.set(toUserMessage(err, 'Unable to create account. Please try again.'));
     } finally {
-      this.loading = false;
+      this.loading.set(false);
     }
   }
 }
