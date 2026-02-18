@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -21,17 +21,17 @@ export class Login {
 
   username = '';
   password = '';
-  error = '';
-  loading = false;
+  error = signal('');
+  loading = signal(false);
 
   async onLogin() {
     if (!this.username || !this.password) {
-      this.error = 'Please enter username and password.';
+      this.error.set('Please enter username and password.');
       return;
     }
 
-    this.error = '';
-    this.loading = true;
+    this.error.set('');
+    this.loading.set(true);
 
     try {
       const response = await firstValueFrom(
@@ -43,9 +43,9 @@ export class Login {
       this.auth.setToken(response.token);
       this.router.navigate(['/dashboard']);
     } catch (err) {
-      this.error = toUserMessage(err, 'Invalid credentials. Please try again.');
+      this.error.set(toUserMessage(err, 'Invalid credentials. Please try again.'));
     } finally {
-      this.loading = false;
+      this.loading.set(false);
     }
   }
 }
