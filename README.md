@@ -1,16 +1,26 @@
-# Frontend
+# Personal Finance Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.2.
+A standalone Angular application for tracking personal finances, built with Angular 21. All data is stored locally in the browser using localStorage - no backend server required!
+
+## Features
+
+- 💰 Track income and expenses
+- 📊 Manage budgets and spending limits
+- 🏷️ Organize transactions by categories
+- 📈 View financial dashboard with insights
+- 🔒 Local authentication and data storage
 
 ## Development server
 
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+**Note:** This application works entirely in the browser - no backend server is needed. All data is persisted in localStorage.
 
 ## Code scaffolding
 
