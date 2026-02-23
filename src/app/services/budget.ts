@@ -1,8 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, EMPTY, catchError, finalize, of, shareReplay, tap } from 'rxjs';
+import { Observable, of, delay, throwError } from 'rxjs';
 import { Auth } from './auth';
-import { toUserMessage } from './api-errors';
 
 export interface Budget {
   id?: string;
@@ -31,15 +29,26 @@ export interface BudgetAlert {
   providedIn: 'root',
 })
 export class BudgetService {
-  private http = inject(HttpClient);
   private auth = inject(Auth);
-  private apiUrl = 'http://localhost:3000/api/budgets';
-  private inFlight: Observable<Budget[]> | null = null;
+  private readonly STORAGE_KEY = 'finance_budgets';
   
   budgets = signal<Budget[]>([]);
   alerts = signal<BudgetAlert[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  private getFromStorage(): Budget[] {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  }
+
+  private saveToStorage(budgets: Budget[]): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(budgets));
+  }
+
+  private generateId(): string {
+    return `bud_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
 
   getBudgets(force = false): Observable<Budget[]> {
     if (!force && this.budgets().length > 0) {
@@ -51,108 +60,112 @@ export class BudgetService {
       return of([]);
     }
 
-    if (this.inFlight) {
-      return this.inFlight;
-    }
-
     this.loading.set(true);
     this.error.set(null);
-    this.inFlight = this.http.get<Budget[]>(this.apiUrl).pipe(
-      tap((budgets) => {
-        this.budgets.set(budgets);
-        this.calculateAlerts(budgets);
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to load budgets'));
-        return of([]);
-      }),
-      finalize(() => {
-        this.loading.set(false);
-        this.inFlight = null;
-      }),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
-
-    return this.inFlight;
+    
+    const budgets = this.getFromStorage();
+    this.budgets.set(budgets);
+    this.calculateAlerts(budgets);
+    this.loading.set(false);
+    
+    return of(budgets).pipe(delay(100));
   }
 
   getBudget(id: string): Observable<Budget> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to load budgets.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
-    return this.http.get<Budget>(`${this.apiUrl}/${id}`).pipe(
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to load budget'));
-        return EMPTY;
-      })
-    );
+    const budgets = this.getFromStorage();
+    const budget = budgets.find(b => b.id === id);
+    
+    if (!budget) {
+      return throwError(() => new Error('Budget not found'));
+    }
+    
+    return of(budget).pipe(delay(100));
   }
 
   createBudget(budget: Omit<Budget, 'id'>): Observable<Budget> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to create budgets.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.post<Budget>(this.apiUrl, budget).pipe(
-      tap((newBudget) => {
-        this.budgets.update((budgets) => [...budgets, newBudget]);
-        this.calculateAlerts(this.budgets());
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to create budget'));
-        return EMPTY;
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    
+    const budgets = this.getFromStorage();
+    const newBudget: Budget = {
+      ...budget,
+      id: this.generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    
+    budgets.push(newBudget);
+    this.saveToStorage(budgets);
+    this.budgets.update((b) => [...b, newBudget]);
+    this.calculateAlerts(this.budgets());
+    this.loading.set(false);
+    
+    return of(newBudget).pipe(delay(100));
   }
 
   updateBudget(id: string, budget: Partial<Budget>): Observable<Budget> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to update budgets.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.put<Budget>(`${this.apiUrl}/${id}`, budget).pipe(
-      tap((updatedBudget) => {
-        this.budgets.update((budgets) =>
-          budgets.map((b) => (b.id === id ? updatedBudget : b))
-        );
-        this.calculateAlerts(this.budgets());
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to update budget'));
-        return EMPTY;
-      }),
-      finalize(() => this.loading.set(false))
+    
+    const budgets = this.getFromStorage();
+    const index = budgets.findIndex(b => b.id === id);
+    
+    if (index === -1) {
+      this.loading.set(false);
+      return throwError(() => new Error('Budget not found'));
+    }
+    
+    const updatedBudget = {
+      ...budgets[index],
+      ...budget,
+      id,
+      updatedAt: new Date().toISOString(),
+    };
+    
+    budgets[index] = updatedBudget;
+    this.saveToStorage(budgets);
+    this.budgets.update((b) =>
+      b.map((item) => (item.id === id ? updatedBudget : item))
     );
+    this.calculateAlerts(this.budgets());
+    this.loading.set(false);
+    
+    return of(updatedBudget).pipe(delay(100));
   }
 
   deleteBudget(id: string): Observable<void> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to delete budgets.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      tap(() => {
-        this.budgets.update((budgets) => budgets.filter((b) => b.id !== id));
-        this.calculateAlerts(this.budgets());
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to delete budget'));
-        return EMPTY;
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    
+    const budgets = this.getFromStorage();
+    const filtered = budgets.filter((b) => b.id !== id);
+    
+    this.saveToStorage(filtered);
+    this.budgets.update((b) => b.filter((item) => item.id !== id));
+    this.calculateAlerts(this.budgets());
+    this.loading.set(false);
+    
+    return of(void 0).pipe(delay(100));
   }
 
   private calculateAlerts(budgets: Budget[]): void {

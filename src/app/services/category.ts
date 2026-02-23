@@ -1,8 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, EMPTY, catchError, finalize, of, shareReplay, tap } from 'rxjs';
+import { Observable, of, delay, throwError } from 'rxjs';
 import { Auth } from './auth';
-import { toUserMessage } from './api-errors';
 
 export interface Category {
   id?: string;
@@ -18,14 +16,38 @@ export interface Category {
   providedIn: 'root',
 })
 export class CategoryService {
-  private http = inject(HttpClient);
   private auth = inject(Auth);
-  private apiUrl = 'http://localhost:3000/api/categories';
-  private inFlight: Observable<Category[]> | null = null;
+  private readonly STORAGE_KEY = 'finance_categories';
   
   categories = signal<Category[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  private getFromStorage(): Category[] {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    if (!data) {
+      // Return default categories
+      const defaults: Category[] = [
+        { id: '1', name: 'Salary', type: 'income', color: '#10b981', icon: '💰', createdAt: new Date().toISOString() },
+        { id: '2', name: 'Freelance', type: 'income', color: '#3b82f6', icon: '💼', createdAt: new Date().toISOString() },
+        { id: '3', name: 'Food', type: 'expense', color: '#ef4444', icon: '🍔', createdAt: new Date().toISOString() },
+        { id: '4', name: 'Transport', type: 'expense', color: '#f59e0b', icon: '🚗', createdAt: new Date().toISOString() },
+        { id: '5', name: 'Shopping', type: 'expense', color: '#8b5cf6', icon: '🛍️', createdAt: new Date().toISOString() },
+        { id: '6', name: 'Bills', type: 'expense', color: '#ec4899', icon: '📄', createdAt: new Date().toISOString() },
+      ];
+      this.saveToStorage(defaults);
+      return defaults;
+    }
+    return JSON.parse(data);
+  }
+
+  private saveToStorage(categories: Category[]): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
+  }
+
+  private generateId(): string {
+    return `cat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
 
   getCategories(force = false): Observable<Category[]> {
     if (!force && this.categories().length > 0) {
@@ -37,101 +59,107 @@ export class CategoryService {
       return of([]);
     }
 
-    if (this.inFlight) {
-      return this.inFlight;
-    }
-
     this.loading.set(true);
     this.error.set(null);
-    this.inFlight = this.http.get<Category[]>(this.apiUrl).pipe(
-      tap((categories) => this.categories.set(categories)),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to load categories'));
-        return of([]);
-      }),
-      finalize(() => {
-        this.loading.set(false);
-        this.inFlight = null;
-      }),
-      shareReplay({ bufferSize: 1, refCount: true })
-    );
-
-    return this.inFlight;
+    
+    const categories = this.getFromStorage();
+    this.categories.set(categories);
+    this.loading.set(false);
+    
+    return of(categories).pipe(delay(100));
   }
 
   getCategory(id: string): Observable<Category> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to load categories.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
-    return this.http.get<Category>(`${this.apiUrl}/${id}`).pipe(
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to load category'));
-        return EMPTY;
-      })
-    );
+    const categories = this.getFromStorage();
+    const category = categories.find(c => c.id === id);
+    
+    if (!category) {
+      return throwError(() => new Error('Category not found'));
+    }
+    
+    return of(category).pipe(delay(100));
   }
 
   createCategory(category: Omit<Category, 'id'>): Observable<Category> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to create categories.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.post<Category>(this.apiUrl, category).pipe(
-      tap((newCategory) => {
-        this.categories.update((cats) => [...cats, newCategory]);
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to create category'));
-        return EMPTY;
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    
+    const categories = this.getFromStorage();
+    const newCategory: Category = {
+      ...category,
+      id: this.generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    
+    categories.push(newCategory);
+    this.saveToStorage(categories);
+    this.categories.update((cats) => [...cats, newCategory]);
+    this.loading.set(false);
+    
+    return of(newCategory).pipe(delay(100));
   }
 
   updateCategory(id: string, category: Partial<Category>): Observable<Category> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to update categories.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.put<Category>(`${this.apiUrl}/${id}`, category).pipe(
-      tap((updatedCategory) => {
-        this.categories.update((cats) =>
-          cats.map((c) => (c.id === id ? updatedCategory : c))
-        );
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to update category'));
-        return EMPTY;
-      }),
-      finalize(() => this.loading.set(false))
+    
+    const categories = this.getFromStorage();
+    const index = categories.findIndex(c => c.id === id);
+    
+    if (index === -1) {
+      this.loading.set(false);
+      return throwError(() => new Error('Category not found'));
+    }
+    
+    const updatedCategory = {
+      ...categories[index],
+      ...category,
+      id,
+      updatedAt: new Date().toISOString(),
+    };
+    
+    categories[index] = updatedCategory;
+    this.saveToStorage(categories);
+    this.categories.update((cats) =>
+      cats.map((c) => (c.id === id ? updatedCategory : c))
     );
+    this.loading.set(false);
+    
+    return of(updatedCategory).pipe(delay(100));
   }
 
   deleteCategory(id: string): Observable<void> {
     if (!this.auth.getToken()) {
       this.error.set('Please sign in to delete categories.');
-      return EMPTY;
+      return throwError(() => new Error('Not authenticated'));
     }
 
     this.loading.set(true);
     this.error.set(null);
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      tap(() => {
-        this.categories.update((cats) => cats.filter((c) => c.id !== id));
-      }),
-      catchError((err) => {
-        this.error.set(toUserMessage(err, 'Failed to delete category'));
-        return EMPTY;
-      }),
-      finalize(() => this.loading.set(false))
-    );
+    
+    const categories = this.getFromStorage();
+    const filtered = categories.filter((c) => c.id !== id);
+    
+    this.saveToStorage(filtered);
+    this.categories.update((cats) => cats.filter((c) => c.id !== id));
+    this.loading.set(false);
+    
+    return of(void 0).pipe(delay(100));
   }
 }
