@@ -49,10 +49,20 @@
 }
 
 .brand-mark {
-	font-size: 2.25rem;
+	width: 3.25rem;
+	height: 3.25rem;
 	background: rgba(248, 250, 252, 0.16);
 	border-radius: 0.9rem;
-	padding: 0.4rem 0.7rem;
+	padding: 0.45rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.brand-mark img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
 
 .brand-name {
@@ -137,16 +147,19 @@
 	color: var(--ink-700);
 }
 
-.field input {
+.field input,
+.field select {
 	padding: 0.85rem 1rem;
 	border-radius: 0.8rem;
 	border: 1px solid rgba(15, 23, 42, 0.12);
 	font-size: 1rem;
 	font-family: inherit;
 	transition: border 0.2s, box-shadow 0.2s;
+	background: #ffffff;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
 	outline: none;
 	border-color: var(--teal-500);
 	box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
