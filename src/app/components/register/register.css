@@ -147,8 +147,7 @@
 	color: var(--ink-700);
 }
 
-.field input,
-.field select {
+.field input {
 	padding: 0.85rem 1rem;
 	border-radius: 0.8rem;
 	border: 1px solid rgba(15, 23, 42, 0.12);
@@ -158,8 +157,7 @@
 	background: #ffffff;
 }
 
-.field input:focus,
-.field select:focus {
+.field input:focus {
 	outline: none;
 	border-color: var(--teal-500);
 	box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);

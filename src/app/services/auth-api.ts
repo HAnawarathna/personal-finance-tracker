@@ -7,7 +7,6 @@ export interface AuthResponse {
     id: number;
     name: string | null;
     email: string;
-    userType: string;
   };
 }
 
@@ -15,7 +14,6 @@ export interface RegisterPayload {
   name?: string;
   email: string;
   password: string;
-  userType: string;
 }
 
 export interface LoginPayload {
@@ -29,16 +27,6 @@ interface StoredUser {
   email: string;
   username: string;
   password: string;
-  userType: string;
-}
-
-interface LegacyStoredUser {
-  id: number;
-  name: string | null;
-  email: string;
-  username: string;
-  password: string;
-  userType?: string;
 }
 
 @Injectable({
@@ -49,11 +37,7 @@ export class AuthApi {
 
   private getUsers(): StoredUser[] {
     const data = localStorage.getItem(this.USERS_KEY);
-    const users: LegacyStoredUser[] = data ? JSON.parse(data) : [];
-    return users.map((user) => ({
-      ...user,
-      userType: user.userType || 'personal',
-    }));
+    return data ? JSON.parse(data) : [];
   }
 
   private saveUsers(users: StoredUser[]): void {
@@ -78,7 +62,6 @@ export class AuthApi {
       email: payload.email,
       username: payload.email.split('@')[0],
       password: payload.password,
-      userType: payload.userType,
     };
 
     users.push(newUser);
@@ -90,7 +73,6 @@ export class AuthApi {
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
-        userType: newUser.userType,
       },
     };
 
@@ -114,7 +96,6 @@ export class AuthApi {
         id: user.id,
         name: user.name,
         email: user.email,
-        userType: user.userType,
       },
     };
 

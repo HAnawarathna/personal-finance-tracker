@@ -23,7 +23,6 @@ export class Register {
   email = '';
   password = '';
   confirmPassword = '';
-  userType = 'personal';
   error = signal('');
   loading = signal(false);
 
@@ -52,7 +51,6 @@ export class Register {
           name: this.name.trim() || undefined,
           email: this.email.trim(),
           password: this.password,
-          userType: this.userType,
         })
       );
       this.auth.setToken(response.token);
