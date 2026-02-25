@@ -26,16 +26,8 @@
 
     <div class="sidebar-footer">
       <div class="user-card">
-        <img
-          class="user-avatar"
-          alt="User avatar"
-          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230ea5a4' offset='0'/><stop stop-color='%231f7a75' offset='1'/></linearGradient></defs><circle cx='32' cy='32' r='32' fill='url(%23g)'/><text x='32' y='38' font-size='20' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>SP</text></svg>"
-        />
-        <div class="user-details">
-          <div class="user-name">S. Perera</div>
-          <div class="user-email">s.perera@email.com</div>
-        </div>
-        <button class="user-action">View</button>
+        <img class="panel-image" src="favicon.ico" alt="Sidebar image one" />
+        <img class="panel-image" src="favicon.ico" alt="Sidebar image two" />
       </div>
     </div>
   </aside>
@@ -51,14 +43,10 @@
             <div class="clock-time">{{ currentTime() }}</div>
             <div class="clock-date">{{ currentDate() }}</div>
           </div>
-          <a routerLink="/register" class="btn-create" aria-label="Create account">
-            <span class="btn-create-icon">+</span>
-            <span class="btn-create-text">
-              <span class="btn-create-title">Create account</span>
-              <span class="btn-create-subtitle">Add a new profile</span>
-            </span>
-          </a>
-          <button (click)="logout()" class="btn-logout">Logout</button>
+          <div class="navbar-image-pair">
+            <img class="panel-image" src="favicon.ico" alt="Header image one" />
+            <img class="panel-image" src="favicon.ico" alt="Header image two" />
+          </div>
         </div>
       </div>
     </header>
