@@ -113,6 +113,7 @@
 .user-card {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   padding: 0.85rem 0.9rem;
   border-radius: 1rem;
@@ -120,49 +121,24 @@
   border: 1px solid rgba(248, 250, 252, 0.12);
 }
 
-.user-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid rgba(248, 250, 252, 0.35);
-  flex-shrink: 0;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  flex: 1;
-}
-
-.user-name {
-  font-weight: 600;
-  color: #ffffff;
-  font-size: 0.95rem;
-}
-
-.user-email {
-  font-size: 0.78rem;
-  color: rgba(248, 250, 252, 0.7);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-action {
-  border: none;
+.panel-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 0.9rem;
+  object-fit: cover;
+  border: 2px solid rgba(248, 250, 252, 0.32);
   background: rgba(248, 250, 252, 0.18);
-  color: #ffffff;
-  padding: 0.35rem 0.7rem;
-  border-radius: 0.6rem;
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
-.user-action:hover {
-  background: rgba(248, 250, 252, 0.28);
+.navbar-image-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 14px rgba(15, 23, 42, 0.08);
 }
 
 /* Main Content */
