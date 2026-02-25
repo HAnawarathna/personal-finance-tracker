@@ -113,11 +113,21 @@
 .user-card {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   padding: 0.85rem 0.9rem;
   border-radius: 1rem;
   background: rgba(248, 250, 252, 0.12);
   border: 1px solid rgba(248, 250, 252, 0.12);
+}
+
+.panel-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 0.9rem;
+  object-fit: cover;
+  border: 2px solid rgba(248, 250, 252, 0.32);
+  background: rgba(248, 250, 252, 0.18);
 }
 
 .user-avatar {
