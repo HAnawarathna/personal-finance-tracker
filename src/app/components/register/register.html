@@ -58,6 +58,16 @@
         />
       </label>
 
+      <label class="field" for="register-user-type">
+        <span>User type</span>
+        <select id="register-user-type" [(ngModel)]="userType" name="userType">
+          <option value="personal">Personal</option>
+          <option value="family">Family</option>
+          <option value="business">Business</option>
+          <option value="student">Student</option>
+        </select>
+      </label>
+
       <label class="field" for="register-password">
         <span>Password</span>
         <input
