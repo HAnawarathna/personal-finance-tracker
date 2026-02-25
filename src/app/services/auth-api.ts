@@ -32,6 +32,15 @@ interface StoredUser {
   userType: string;
 }
 
+interface LegacyStoredUser {
+  id: number;
+  name: string | null;
+  email: string;
+  username: string;
+  password: string;
+  userType?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -40,7 +49,11 @@ export class AuthApi {
 
   private getUsers(): StoredUser[] {
     const data = localStorage.getItem(this.USERS_KEY);
-    return data ? JSON.parse(data) : [];
+    const users: LegacyStoredUser[] = data ? JSON.parse(data) : [];
+    return users.map((user) => ({
+      ...user,
+      userType: user.userType || 'personal',
+    }));
   }
 
   private saveUsers(users: StoredUser[]): void {
