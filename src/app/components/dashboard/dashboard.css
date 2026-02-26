@@ -52,6 +52,17 @@
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-mark {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.45rem;
+  object-fit: cover;
+  border: 1px solid rgba(248, 250, 252, 0.3);
 }
 
 .sidebar-nav {
