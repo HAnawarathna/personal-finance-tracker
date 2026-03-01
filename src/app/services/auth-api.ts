@@ -34,6 +34,9 @@ interface StoredUser {
 })
 export class AuthApi {
   private readonly USERS_KEY = 'finance_users';
+  private readonly DEMO_EMAIL = 'demo@financeflow.local';
+  private readonly DEMO_PASSWORD = 'demo1234';
+  private readonly DEMO_NAME = 'Demo User';
 
   private getUsers(): StoredUser[] {
     const data = localStorage.getItem(this.USERS_KEY);
@@ -42,6 +45,27 @@ export class AuthApi {
 
   private saveUsers(users: StoredUser[]): void {
     localStorage.setItem(this.USERS_KEY, JSON.stringify(users));
+  }
+
+  private ensureDemoUser(): StoredUser {
+    const users = this.getUsers();
+    const existing = users.find(user => user.email === this.DEMO_EMAIL);
+    if (existing) {
+      return existing;
+    }
+
+    const newUser: StoredUser = {
+      id: users.length + 1,
+      name: this.DEMO_NAME,
+      email: this.DEMO_EMAIL,
+      username: this.DEMO_EMAIL.split('@')[0],
+      password: this.DEMO_PASSWORD,
+    };
+
+    users.push(newUser);
+    this.saveUsers(users);
+
+    return newUser;
   }
 
   private generateToken(userId: number): string {
@@ -89,6 +113,21 @@ export class AuthApi {
     if (!user) {
       return throwError(() => new Error('Invalid credentials')).pipe(delay(300));
     }
+
+    const response: AuthResponse = {
+      token: this.generateToken(user.id),
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    };
+
+    return of(response).pipe(delay(300));
+  }
+
+  loginDemo(): Observable<AuthResponse> {
+    const user = this.ensureDemoUser();
 
     const response: AuthResponse = {
       token: this.generateToken(user.id),
