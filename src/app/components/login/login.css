@@ -181,6 +181,25 @@
 	box-shadow: 0 12px 20px rgba(15, 95, 87, 0.25);
 }
 
+.btn-secondary {
+	padding: 0.85rem 1rem;
+	border-radius: 0.8rem;
+	background: transparent;
+	color: var(--ink-700);
+	border: 1px solid rgba(15, 23, 42, 0.2);
+	font-weight: 700;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s, border 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+	color: var(--teal-700);
+	border-color: rgba(15, 118, 110, 0.5);
+	transform: translateY(-2px);
+	box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
+}
+
 .form-footer {
 	display: flex;
 	gap: 0.5rem;
