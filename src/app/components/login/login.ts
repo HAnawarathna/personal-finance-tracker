@@ -48,6 +48,21 @@ export class Login {
       this.loading.set(false);
     }
   }
+
+  async onDemoLogin() {
+    this.error.set('');
+    this.loading.set(true);
+
+    try {
+      const response = await firstValueFrom(this.authApi.loginDemo());
+      this.auth.setToken(response.token);
+      this.router.navigate(['/dashboard']);
+    } catch (err) {
+      this.error.set(toUserMessage(err, 'Unable to start demo session. Please try again.'));
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }
 
 
