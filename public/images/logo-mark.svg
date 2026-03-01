@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Finance logo">
+  <defs>
+    <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f766e"/>
+      <stop offset="1" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="#0f172a"/>
+  <rect x="20" y="20" width="88" height="88" rx="18" fill="url(#logoGradient)"/>
+  <path d="M40 76c0-12 10-22 22-22h6c6 0 10-4 10-10 0-6-4-10-10-10H52" fill="none" stroke="#f8fafc" stroke-width="10" stroke-linecap="round"/>
+  <path d="M52 86h24" stroke="#f8fafc" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="52" cy="40" r="6" fill="#f8fafc"/>
+</svg>
