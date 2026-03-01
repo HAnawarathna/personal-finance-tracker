@@ -62,6 +62,10 @@
         {{ loading() ? 'Signing in...' : 'Sign in' }}
       </button>
 
+      <button class="btn-secondary" (click)="onDemoLogin()" [disabled]="loading()">
+        Continue as demo
+      </button>
+
       <div class="form-footer">
         <span>New here?</span>
         <a routerLink="/register">Create an account</a>
