@@ -105,74 +105,6 @@
   background: rgba(248, 250, 252, 0.16);
 }
 
-.sidebar-footer {
-  padding: 0 1rem;
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 0.85rem 0.9rem;
-  border-radius: 1rem;
-  background: rgba(248, 250, 252, 0.12);
-  border: 1px solid rgba(248, 250, 252, 0.12);
-}
-
-.panel-image {
-  width: 56px;
-  height: 56px;
-  border-radius: 0.9rem;
-  object-fit: cover;
-  border: 2px solid rgba(248, 250, 252, 0.32);
-  background: rgba(248, 250, 252, 0.18);
-}
-
-.user-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid rgba(248, 250, 252, 0.35);
-  flex-shrink: 0;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  flex: 1;
-}
-
-.user-name {
-  font-weight: 600;
-  color: #ffffff;
-  font-size: 0.95rem;
-}
-
-.user-email {
-  font-size: 0.78rem;
-  color: rgba(248, 250, 252, 0.7);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-action {
-  border: none;
-  background: rgba(248, 250, 252, 0.18);
-  color: #ffffff;
-  padding: 0.35rem 0.7rem;
-  border-radius: 0.6rem;
-  font-weight: 600;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.user-action:hover {
-  background: rgba(248, 250, 252, 0.28);
-}
 
 .main-content {
   flex: 1;
@@ -689,10 +621,6 @@
     left: 1rem;
     right: 1rem;
     top: 1rem;
-  }
-
-  .sidebar-footer {
-    padding: 0 1rem 1rem;
   }
 
   .categories-grid {
