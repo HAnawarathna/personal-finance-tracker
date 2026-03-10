@@ -1,31 +1,28 @@
 <div class="transactions-container">
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h2 class="logo">
-        <img class="logo-mark" src="images/logo-mark.svg" alt="Finance logo" />
-        <span>Finance</span>
-      </h2>
+      <p class="sidebar-kicker">Workspace</p>
+      <h2 class="logo">Finance Flow</h2>
     </div>
 
     <nav class="sidebar-nav">
       <a routerLink="/dashboard" class="nav-item">
-        <span class="icon">📊</span>
-        <span>Dashboard</span>
+        <span class="icon">&#x1F4CA;</span>
+        <span class="nav-label">Dashboard</span>
       </a>
       <a routerLink="/transactions" class="nav-item active">
-        <span class="icon">💳</span>
-        <span>Transactions</span>
+        <span class="icon">&#x1F4B3;</span>
+        <span class="nav-label">Transactions</span>
       </a>
       <a routerLink="/categories" class="nav-item">
-        <span class="icon">🏷️</span>
-        <span>Categories</span>
+        <span class="icon">&#x1F3F7;&#xFE0F;</span>
+        <span class="nav-label">Categories</span>
       </a>
       <a routerLink="/budget" class="nav-item">
-        <span class="icon">📋</span>
-        <span>Budget</span>
+        <span class="icon">&#x1F4CB;</span>
+        <span class="nav-label">Budget</span>
       </a>
     </nav>
-
   </aside>
 
   <div class="main-content">
@@ -113,13 +110,13 @@
           <div class="card-header">
             <h2>All Transactions</h2>
             <div class="table-actions">
-              <input 
-                class="table-search" 
+              <input
+                class="table-search"
                 placeholder="Search title or category"
                 [value]="searchQuery()"
                 (input)="searchQuery.set($any($event.target).value)"
               />
-              <select 
+              <select
                 class="table-filter"
                 [value]="typeFilter()"
                 (change)="typeFilter.set($any($event.target).value)"
@@ -128,7 +125,7 @@
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
               </select>
-              <select 
+              <select
                 class="table-filter"
                 [value]="categoryFilter()"
                 (change)="categoryFilter.set($any($event.target).value)"
@@ -183,8 +180,8 @@
                       <td>{{ getCategoryName(transaction.categoryId) }}</td>
                       <td>{{ transaction.date }}</td>
                       <td>
-                        <button 
-                          class="btn-icon danger" 
+                        <button
+                          class="btn-icon danger"
                           (click)="deleteTransaction(transaction)"
                           type="button"
                         >
