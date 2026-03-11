@@ -1,37 +1,36 @@
 <div class="dashboard-container">
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="brand-lockup">
-        <span class="brand-badge">FF</span>
-        <div>
-          <p class="brand-kicker">Personal finance</p>
-          <h2 class="logo">Finance Flow</h2>
-        </div>
-      </div>
-      <p class="sidebar-copy">Track cash flow, budgets, and spending from one focused workspace.</p>
+      <h2 class="logo">
+        <span>Finance</span>
+      </h2>
     </div>
 
     <nav class="sidebar-nav">
       <a routerLink="/dashboard" class="nav-item active">
-        <span class="icon icon-dashboard" aria-hidden="true"></span>
+        <span class="icon">📊</span>
         <span>Dashboard</span>
       </a>
       <a routerLink="/transactions" class="nav-item">
-        <span class="icon icon-transactions" aria-hidden="true"></span>
+        <span class="icon">💳</span>
         <span>Transactions</span>
       </a>
       <a routerLink="/categories" class="nav-item">
-        <span class="icon icon-categories" aria-hidden="true"></span>
+        <span class="icon">🏷️</span>
         <span>Categories</span>
       </a>
       <a routerLink="/budget" class="nav-item">
-        <span class="icon icon-budget" aria-hidden="true"></span>
+        <span class="icon">📋</span>
         <span>Budget</span>
       </a>
     </nav>
+
   </aside>
 
+  <!-- Main Content -->
   <div class="main-content">
+    <!-- Top Navbar -->
     <header class="navbar">
       <div class="navbar-content">
         <h1 class="page-title">Dashboard</h1>
@@ -44,6 +43,7 @@
       </div>
     </header>
 
+    <!-- Page Content -->
     <div class="content">
       @if (loading()) {
         <div class="loading">
@@ -51,9 +51,10 @@
           <p>Loading dashboard...</p>
         </div>
       } @else {
+        <!-- Financial Overview -->
         <div class="overview-grid">
           <div class="overview-card">
-            <div class="card-icon income">ðŸ’µ</div>
+            <div class="card-icon income">💵</div>
             <div class="card-content">
               <h3>Total Income</h3>
               <p class="amount">${{ totalIncome() | number:'1.2-2' }}</p>
@@ -61,7 +62,7 @@
           </div>
 
           <div class="overview-card">
-            <div class="card-icon expense">ðŸ’¸</div>
+            <div class="card-icon expense">💸</div>
             <div class="card-content">
               <h3>Total Expense</h3>
               <p class="amount">${{ totalExpense() | number:'1.2-2' }}</p>
@@ -69,7 +70,7 @@
           </div>
 
           <div class="overview-card">
-            <div class="card-icon balance" [class.negative]="balance() < 0">ðŸ’°</div>
+            <div class="card-icon balance" [class.negative]="balance() < 0">💰</div>
             <div class="card-content">
               <h3>Balance</h3>
               <p class="amount" [class.negative]="balance() < 0">${{ balance() | number:'1.2-2' }}</p>
@@ -77,13 +78,15 @@
           </div>
         </div>
 
+        <!-- Recent Transactions & Budget Status -->
         <div class="content-grid">
+          <!-- Recent Transactions -->
           <div class="card">
             <div class="card-header">
               <h2>Recent Transactions</h2>
-              <a routerLink="/transactions" class="view-all">View all</a>
+              <a routerLink="/transactions" class="view-all">View All →</a>
             </div>
-
+            
             @if (recentTransactions().length === 0) {
               <div class="empty-state">
                 <p>No transactions yet</p>
@@ -93,7 +96,7 @@
                 @for (txn of recentTransactions(); track txn.id) {
                   <div class="transaction-item">
                     <div class="transaction-info">
-                      <span class="transaction-icon">ðŸ’°</span>
+                      <span class="transaction-icon">💰</span>
                       <div>
                         <p class="transaction-category">
                           {{ getCategoryName(txn.categoryId) }}
@@ -110,10 +113,11 @@
             }
           </div>
 
+          <!-- Budget Overview -->
           <div class="card">
             <div class="card-header">
               <h2>Budget Status</h2>
-              <a routerLink="/budget" class="view-all">View all</a>
+              <a routerLink="/budget" class="view-all">View All →</a>
             </div>
 
             @if (budgetStatus().length === 0) {
@@ -131,7 +135,7 @@
                       </span>
                     </div>
                     <div class="progress-bar">
-                      <div
+                      <div 
                         class="progress-fill"
                         [class]="'progress-' + getProgressColor(budget.percentage)"
                         [style.width.%]="budget.percentage"
@@ -145,6 +149,7 @@
           </div>
         </div>
 
+        <!-- Category Breakdown -->
         @if (categoryBreakdown().length > 0) {
           <div class="card">
             <div class="card-header">
@@ -169,3 +174,5 @@
     </div>
   </div>
 </div>
+
+
