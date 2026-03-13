@@ -35,18 +35,18 @@
       <div class="navbar-content">
         <h1 class="page-title">Dashboard</h1>
         <div class="navbar-right">
-          <a
-            routerLink="/categories"
-            [queryParams]="{ action: 'create' }"
+          <button
+            type="button"
             class="btn-create"
             aria-label="Add Category"
+            (click)="openAddCategoryForm()"
           >
             <span class="btn-create-icon" aria-hidden="true">+</span>
             <span class="btn-create-text">
               <span class="btn-create-title">Add Category</span>
               <span class="btn-create-subtitle">Manage category list</span>
             </span>
-          </a>
+          </button>
           <div class="clock" aria-live="polite">
             <div class="clock-time">{{ currentTime() }}</div>
             <div class="clock-date">{{ currentDate() }}</div>
@@ -186,5 +186,69 @@
     </div>
   </div>
 </div>
+
+@if (showAddCategoryForm()) {
+  <div class="modal-overlay" (click)="closeAddCategoryForm()">
+    <div class="category-modal" (click)="$event.stopPropagation()">
+      <div class="category-modal-header">
+        <h2>Add Category</h2>
+        <button type="button" class="category-modal-close" (click)="closeAddCategoryForm()" aria-label="Close form">
+          &times;
+        </button>
+      </div>
+
+      <form [formGroup]="addCategoryForm" (ngSubmit)="saveCategory()" class="category-form">
+        <div class="form-group">
+          <label for="category-name">Category Name</label>
+          <input
+            id="category-name"
+            type="text"
+            class="form-input"
+            formControlName="name"
+            placeholder="e.g. Groceries"
+            [attr.aria-invalid]="addCategoryForm.get('name')?.invalid && addCategoryForm.get('name')?.touched"
+          />
+          @if (addCategoryForm.get('name')?.invalid && addCategoryForm.get('name')?.touched) {
+            <p class="form-error">Category name must be at least 2 characters.</p>
+          }
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="category-type">Type</label>
+            <select id="category-type" class="form-input" formControlName="type">
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="category-icon">Icon</label>
+            <input id="category-icon" type="text" class="form-input" formControlName="icon" placeholder="🏷️" maxlength="2" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="category-color">Color</label>
+          <div class="color-row">
+            <input id="category-color" type="color" class="color-input" formControlName="color" />
+            <span class="color-value">{{ addCategoryForm.get('color')?.value }}</span>
+          </div>
+        </div>
+
+        @if (addCategoryError()) {
+          <p class="form-error">{{ addCategoryError() }}</p>
+        }
+
+        <div class="category-form-actions">
+          <button type="button" class="btn-secondary" (click)="closeAddCategoryForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="addCategoryForm.invalid || categorySaving()">
+            {{ categorySaving() ? 'Saving...' : 'Save Category' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
 
 
